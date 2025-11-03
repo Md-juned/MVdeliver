@@ -1,0 +1,235 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "My Express API",
+    "description": "A sample API built with Express",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://192.168.1.43:8080"
+    }
+  ],
+  "security": [],
+  "paths": {
+    "/global/upload": {
+      "post": {
+        "summary": "Upload File",
+        "description": "Uploads a file to the specified folder. The folder name should be passed as a query parameter.",
+        "tags": ["GLOBAL"],
+        "parameters": [
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "Folder where the file should be uploaded (e.g., profile, additionalImg, etc.)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "profile"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The file to upload"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful"},
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/global/deleteFile/{file_path}": {
+      "delete": {
+        "summary": "Delete File",
+        "tags": ["GLOBAL"],
+        "parameters": [
+          {
+            "name": "file_path",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "assets/category/file-1740720238602-939068402.jpg"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/login": {
+      "post": {
+        "summary": "Login Admin",
+        "tags": ["ADMIN"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email_address": {
+                    "type": "string",
+                    "default": "admin@cloudwapp.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "default": "12345"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful"},
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/user/sendOtp": {
+      "post": {
+        "summary": "Send OTP",
+        "tags": ["USER"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "country_code": {
+                    "type": "string",
+                    "default": "+1"
+                  },
+                  "mobile_number": {
+                    "type": "string",
+                    "default": "1234567890"
+                  },
+                  "language": {
+                    "type": "string",
+                    "default": "en"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Success" },
+          "400": { "description": "Bad request" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/user/verifyOtp": {
+      "post": {
+        "summary": "verify OTP",
+        "tags": ["USER"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "country_code": {
+                    "type": "string",
+                    "default": "+1"
+                  },
+                  "mobile_number": {
+                    "type": "string",
+                    "default": "1234567890"
+                  },
+                  "otp": {
+                    "type": "string",
+                    "default": "1234"
+                  },
+                  "fcm_token": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "device_token": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "device_type": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "language": {
+                    "type": "string",
+                    "default": "en"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OTP sent successfully" },
+          "400": { "description": "Bad request" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/user/logout": {
+      "post": {
+        "summary": "Logout",
+        "tags": ["USER"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "device_token":{
+                    "type": "string",
+                    "default": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Success" },
+          "400": { "description": "Bad request" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    }
+  },
+  "components": {
+      "securitySchemes": {
+      "BearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+      }
+      }
+  }
+}

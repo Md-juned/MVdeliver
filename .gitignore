@@ -1,0 +1,11 @@
+# Node modules directory
+/node_modules/
+
+# Ignore environment variables file
+.env
+
+# Ignore package
+/package-lock.json
+
+#logs
+*.log
