@@ -1,4 +1,21 @@
 import models from "../../../models/index.js";
+const { Op } = models.Sequelize;
+
+const parseBooleanInput = (value, fallback) => {
+  if (value === undefined || value === null || value === "") return fallback;
+  if (typeof value === "boolean") return value;
+  if (typeof value === "number") return value === 1;
+  const lowered = String(value).toLowerCase();
+  if (["true", "1", "yes"].includes(lowered)) return true;
+  if (["false", "0", "no"].includes(lowered)) return false;
+  return fallback;
+};
+
+const normalizeVisibility = (value, fallback = "visible") => {
+  if (!value) return fallback;
+  const lowered = String(value).toLowerCase();
+  return ["visible", "hidden"].includes(lowered) ? lowered : fallback;
+};
 
 
 // ---- Food Category ----
@@ -141,6 +158,8 @@ export const addOrEditProduct = async (req, res) => {
       offer_price,
       short_description,
       status,
+      is_featured,
+      visibility,
     } = req.body;
 
      
@@ -160,8 +179,10 @@ export const addOrEditProduct = async (req, res) => {
     const specificationsArray = parseField(req.body.specifications);
     const addonIdsArray = parseField(req.body.addon_ids);
 
-    let image = null;
+    let image = req.file ? req.file.path : null;
     let product;
+    const normalizedIsFeatured = parseBooleanInput(is_featured, undefined);
+    const normalizedVisibility = normalizeVisibility(visibility);
 
     if (id) {
       // Update existing product
@@ -178,6 +199,8 @@ export const addOrEditProduct = async (req, res) => {
         offer_price,
         short_description,
         status,
+        is_featured: normalizedIsFeatured ?? product.is_featured,
+        visibility: visibility ? normalizedVisibility : product.visibility,
         image: image ?? product.image,
       });
 
@@ -196,6 +219,8 @@ export const addOrEditProduct = async (req, res) => {
         offer_price,
         short_description,
         status: status || "active",
+        is_featured: normalizedIsFeatured ?? false,
+        visibility: normalizedVisibility,
         image,
       });
     }
@@ -444,6 +469,56 @@ export const deleteProduct = async (req, res) => {
 
     return res.json({ status: true, message: "Product deleted successfully" });
   } catch (error) {
+    return res.json({ status: false, message: error.message });
+  }
+};
+
+export const updateProductVisibility = async (req, res) => {
+  try {
+    const { id, visibility, is_featured } = req.body;
+
+    if (!id) {
+      return res.json({ status: false, message: "Product ID is required" });
+    }
+
+    const product = await models.Product.findByPk(id);
+    if (!product) {
+      return res.json({ status: false, message: "Product not found" });
+    }
+
+    const updates = {};
+
+    if (visibility) {
+      const normalized = normalizeVisibility(visibility, null);
+      if (!normalized) {
+        return res.json({
+          status: false,
+          message: "Visibility must be either visible or hidden",
+        });
+      }
+      updates.visibility = normalized;
+    }
+
+    if (is_featured !== undefined) {
+      updates.is_featured = parseBooleanInput(is_featured, product.is_featured);
+    }
+
+    if (!Object.keys(updates).length) {
+      return res.json({
+        status: false,
+        message: "Nothing to update",
+      });
+    }
+
+    await product.update(updates);
+
+    return res.json({
+      status: true,
+      message: "Product visibility updated successfully",
+      data: product,
+    });
+  } catch (error) {
+    console.log(error);
     return res.json({ status: false, message: error.message });
   }
 };

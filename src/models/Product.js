@@ -49,6 +49,18 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
       },
 
+      is_featured: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+
+      visibility: {
+        type: DataTypes.ENUM("visible", "hidden"),
+        allowNull: false,
+        defaultValue: "visible",
+      },
+
       status: {
         type: DataTypes.ENUM("active", "inactive"),
         allowNull: false,

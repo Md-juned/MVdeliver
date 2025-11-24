@@ -7,7 +7,7 @@ import fs from 'fs';
 import config from './src/common/config/envConfig.js';
 import path from 'path';
 import {createServer} from 'http';
-import userRoute from './src/api/user/auth/index.js';
+import userRoute from './src/api/user/index.js';
 import adminRoute from './src/api/admin/auth/index.js';
 import productRoute from './src/api/admin/product/index.js';
 import restaurantRoute from './src/api/admin/restaurant/index.js';

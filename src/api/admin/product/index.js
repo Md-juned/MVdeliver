@@ -12,6 +12,7 @@ import {
   addOrEditAddon,
   getAddonList,
   deleteAddon,
+  updateProductVisibility,
 } from "./controller.js";
 import { authenticateToken } from "../../../common/middleware/jwtToken.middleware.js";
 import upload from "../../../utils/multer.js";
@@ -64,6 +65,8 @@ router.post(
       offer_price: Joi.number().optional(),
       short_description: Joi.string().optional(),
       status: Joi.string().optional(),
+      is_featured: Joi.boolean().optional(),
+      visibility: Joi.string().valid("visible", "hidden").optional(),
       // Accept direct arrays of objects / strings / integers
       sizes: Joi.string().optional(),
       specifications: Joi.string().optional(),
@@ -98,6 +101,19 @@ router.post(
     })
   ),
   deleteProduct
+);
+
+router.post(
+  "/updateProductVisibility",
+  authenticateToken,
+  validate(
+    Joi.object({
+      id: Joi.number().required(),
+      visibility: Joi.string().valid("visible", "hidden").optional(),
+      is_featured: Joi.boolean().optional(),
+    })
+  ),
+  updateProductVisibility
 );
 
 // Addon Product //
