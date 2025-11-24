@@ -5,8 +5,8 @@ import { TableNames } from "../../src/common/constant/dbConstants.js";
  * @param { import("sequelize").DataTypes } DataTypes
  */
 export default (sequelize, DataTypes) => {
-  const Cuisine = sequelize.define(
-    "Cuisine",
+  const Cart = sequelize.define(
+    "Cart",
     {
       id: {
         type: DataTypes.INTEGER,
@@ -14,40 +14,44 @@ export default (sequelize, DataTypes) => {
         autoIncrement: true,
         allowNull: false,
       },
-
-      name: {
-        type: DataTypes.STRING(255),
+      user_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+          model: TableNames.users,
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
-
-      image: {
-        type: DataTypes.STRING(500),
-        allowNull: true,
-      },
-
-      status: {
-        type: DataTypes.STRING(50),
+      product_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: "active",
+        references: {
+          model: TableNames.product,
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
-
+      quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+      },
       created_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
       },
-
       updated_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
       },
-
       deleted_at: {
         type: DataTypes.DATE,
         allowNull: true,
       },
     },
     {
-      tableName: TableNames.cuisines, // Add name in your dbConstants
+      tableName: "cart",
       timestamps: true,
       createdAt: "created_at",
       updatedAt: "updated_at",
@@ -56,12 +60,17 @@ export default (sequelize, DataTypes) => {
     }
   );
 
-  Cuisine.associate = (models) => {
-    Cuisine.hasMany(models.Restaurant, {
-      foreignKey: "cuisine_id",
-      as: "restaurants",
+  Cart.associate = (models) => {
+    Cart.belongsTo(models.User, {
+      foreignKey: "user_id",
+      as: "user",
+    });
+    Cart.belongsTo(models.Product, {
+      foreignKey: "product_id",
+      as: "product",
     });
   };
 
-  return Cuisine;
+  return Cart;
 };
+

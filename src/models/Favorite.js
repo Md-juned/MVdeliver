@@ -5,8 +5,8 @@ import { TableNames } from "../../src/common/constant/dbConstants.js";
  * @param { import("sequelize").DataTypes } DataTypes
  */
 export default (sequelize, DataTypes) => {
-  const Cuisine = sequelize.define(
-    "Cuisine",
+  const Favorite = sequelize.define(
+    "Favorite",
     {
       id: {
         type: DataTypes.INTEGER,
@@ -14,54 +14,52 @@ export default (sequelize, DataTypes) => {
         autoIncrement: true,
         allowNull: false,
       },
-
-      name: {
-        type: DataTypes.STRING(255),
+      user_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+          model: TableNames.users,
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
-
-      image: {
-        type: DataTypes.STRING(500),
-        allowNull: true,
-      },
-
-      status: {
-        type: DataTypes.STRING(50),
+      product_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: "active",
+        references: {
+          model: TableNames.product,
+          key: "id",
+        },
+        onDelete: "CASCADE",
       },
-
       created_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
       },
-
       updated_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
       },
-
-      deleted_at: {
-        type: DataTypes.DATE,
-        allowNull: true,
-      },
     },
     {
-      tableName: TableNames.cuisines, // Add name in your dbConstants
+      tableName: "favorites",
       timestamps: true,
       createdAt: "created_at",
       updatedAt: "updated_at",
-      paranoid: true,
-      deletedAt: "deleted_at",
     }
   );
 
-  Cuisine.associate = (models) => {
-    Cuisine.hasMany(models.Restaurant, {
-      foreignKey: "cuisine_id",
-      as: "restaurants",
+  Favorite.associate = (models) => {
+    Favorite.belongsTo(models.User, {
+      foreignKey: "user_id",
+      as: "user",
+    });
+    Favorite.belongsTo(models.Product, {
+      foreignKey: "product_id",
+      as: "product",
     });
   };
 
-  return Cuisine;
+  return Favorite;
 };
+

@@ -7,7 +7,10 @@ import fs from 'fs';
 import config from './src/common/config/envConfig.js';
 import path from 'path';
 import {createServer} from 'http';
-import userRoute from './src/api/user/index.js';
+import userRoute from './src/api/user/auth/index.js';
+import homeRoute from './src/api/user/home/index.js';
+import favoritesRoute from './src/api/user/favorites/index.js';
+import cartRoute from './src/api/user/cart/index.js';
 import adminRoute from './src/api/admin/auth/index.js';
 import productRoute from './src/api/admin/product/index.js';
 import restaurantRoute from './src/api/admin/restaurant/index.js';
@@ -36,10 +39,14 @@ app.get('/', (req, res) => {
 
 // routes
 app.use("/user", userRoute);
+app.use("/user", homeRoute);
+app.use("/user", favoritesRoute);
+app.use("/user", cartRoute);
 app.use("/admin", adminRoute);
 app.use("/admin", productRoute);
 app.use("/admin", restaurantRoute);
 app.use("/admin", deliverymanRoute);
+
 
 
 

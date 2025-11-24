@@ -13,4 +13,6 @@ export class TableNames {
     static cuisine = "cuisines"
     static city = "cities"
     static deliverymen = "deliverymen"
+    static favorites = "favorites"
+    static cart = "cart"
 }

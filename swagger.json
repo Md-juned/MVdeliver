@@ -311,18 +311,6 @@
                     "type": "string",
                     "default": "active"
                   },
-                  "is_featured": {
-                    "type": "boolean",
-                    "default": false
-                  },
-                  "visibility": {
-                    "type": "string",
-                    "enum": [
-                      "visible",
-                      "hidden"
-                    ],
-                    "default": "visible"
-                  },
                   "image": {
                     "type": "string",
                     "format": "binary"
@@ -466,64 +454,6 @@
                     "default": ""
                   }
                 }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Request successful"
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/admin/updateProductVisibility": {
-      "post": {
-        "summary": "Update Product Visibility / Featured flag",
-        "tags": [
-          "PRODUCT"
-        ],
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "integer",
-                    "default": 1
-                  },
-                  "visibility": {
-                    "type": "string",
-                    "enum": [
-                      "visible",
-                      "hidden"
-                    ],
-                    "description": "Pass visible to enable, hidden to disable"
-                  },
-                  "is_featured": {
-                    "type": "boolean",
-                    "description": "Toggle featured badge"
-                  }
-                },
-                "required": [
-                  "id"
-                ]
               }
             }
           }
