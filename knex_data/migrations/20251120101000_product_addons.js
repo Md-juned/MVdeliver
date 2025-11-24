@@ -3,14 +3,27 @@
  * @returns { Promise<void> }
  */
 export async function up(knex) {
+    const exists = await knex.schema.hasTable("product_addons");
+    if (exists) {
+        await knex.schema.dropTable("product_addons");
+    }
+
     await knex.schema.createTable('product_addons', function (table) {
         table.increments("id").primary();
 
         table.integer("product_id").unsigned().notNullable();
-        table.foreign("product_id").references("id").inTable("products");
+        table
+            .foreign("product_id")
+            .references("id")
+            .inTable("products")
+            .onDelete("CASCADE");
 
         table.integer("addon_id").unsigned().notNullable();  // dropdown selected ID
-        table.foreign("addon_id").references("id").inTable("addons");
+        table
+            .foreign("addon_id")
+            .references("id")
+            .inTable("addons")
+            .onDelete("CASCADE");
 
         table.timestamp("created_at").defaultTo(knex.fn.now());
         table.timestamp("updated_at").defaultTo(knex.fn.now());

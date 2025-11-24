@@ -20,10 +20,6 @@ export default (sequelize, DataTypes) => {
       },
       onDelete: "CASCADE", 
     },
-    auth_token: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
     fcm_toke: {
       type: DataTypes.STRING(255),
       allowNull: true,

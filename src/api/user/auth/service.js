@@ -1,6 +1,7 @@
-import config from '../../common/config/envConfig.js';
+import config from '../../../common/config/envConfig.js';
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto';
+
 
 /**
  * @method Function
