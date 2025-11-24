@@ -8,7 +8,10 @@ import config from './src/common/config/envConfig.js';
 import path from 'path';
 import {createServer} from 'http';
 import userRoute from './src/api/user/index.js';
-import globalRoute from './src/api/global/index.js'
+import adminRoute from './src/api/admin/auth/index.js';
+import productRoute from './src/api/admin/product/index.js';
+import restaurantRoute from './src/api/admin/restaurant/index.js';
+
 
 const app = express();
 
@@ -32,8 +35,14 @@ app.get('/', (req, res) => {
 })
 
 // routes
-app.use('/global', globalRoute);
 app.use("/user", userRoute);
+app.use("/admin", adminRoute);
+app.use("/admin", productRoute);
+app.use("/admin", restaurantRoute);
+
+
+
+
 
 // database connectivity
 database;

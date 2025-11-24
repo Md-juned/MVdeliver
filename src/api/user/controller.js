@@ -1,6 +1,5 @@
-import { messages } from "../../common/constant/messageConstants.js";
+import { messages } from "../../common/constant/messageConstants.js"
 import models from "../../models/index.js";
-import { generateAuthToken, generateOTP, generateToken } from "./service.js";
 import bcrypt from "bcryptjs";
 
 

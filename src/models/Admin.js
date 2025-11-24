@@ -6,23 +6,27 @@ import { TableNames } from "../../src/common/constant/dbConstants.js";
  */
 export default (sequelize, DataTypes) => {
   const Admin = sequelize.define(TableNames.admin, {
-    id: {
-      type: DataTypes.UUID,  
+     id: {
+      type: DataTypes.INTEGER,
       primaryKey: true,
+      autoIncrement: true,
       allowNull: false,
-      defaultValue: DataTypes.UUIDV4
     },
     name: {
       type: DataTypes.STRING(255),
       allowNull: true,
     },
-    email_address: {
+    email: {
       type: DataTypes.STRING(255),
       allowNull: true,
       unique: true,
       validate: {
         isEmail: true,
       },
+    },
+    role: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
     },
     password: {
       type: DataTypes.STRING(255),

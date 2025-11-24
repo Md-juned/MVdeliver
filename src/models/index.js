@@ -1,7 +1,19 @@
 import { Sequelize } from 'sequelize';
 import dbConfig from '../common/config/db.js';
 import User from './User.js';
+import Admin from './Admin.js';
 import DeviceToken from './DeviceToken.js';
+import FoodCategory from './FoodCategory.js';
+import Product from './Product.js';
+import Restaurant from './Restaurant.js';
+import Addon from './Addon.js';
+import ProductAddon from './ProductAddon.js';
+import ProductSize from './ProductSize.js';
+import ProductSpecification from './ProductSpecification.js';
+import Cuisine from './Cuisine.js';
+import City from './City.js';
+
+
 
 const sequelize = new Sequelize(dbConfig.url, {
     ...dbConfig,
@@ -10,6 +22,17 @@ const sequelize = new Sequelize(dbConfig.url, {
 const models = {
     User: User(sequelize, Sequelize.DataTypes),
     DeviceToken: DeviceToken(sequelize, Sequelize.DataTypes),
+    Admin: Admin(sequelize, Sequelize.DataTypes),
+    FoodCategory: FoodCategory(sequelize, Sequelize.DataTypes),
+    Product: Product(sequelize, Sequelize.DataTypes),
+    Restaurant: Restaurant(sequelize, Sequelize.DataTypes),
+    Addon: Addon(sequelize, Sequelize.DataTypes),
+    ProductAddon: ProductAddon(sequelize, Sequelize.DataTypes),
+    ProductSize: ProductSize(sequelize, Sequelize.DataTypes),
+    ProductSpecification: ProductSpecification(sequelize, Sequelize.DataTypes),
+    Cuisine: Cuisine(sequelize, Sequelize.DataTypes),
+    City: City(sequelize, Sequelize.DataTypes),
+
 };
 
 // Setup associations
