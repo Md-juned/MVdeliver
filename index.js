@@ -11,6 +11,7 @@ import userRoute from './src/api/user/index.js';
 import adminRoute from './src/api/admin/auth/index.js';
 import productRoute from './src/api/admin/product/index.js';
 import restaurantRoute from './src/api/admin/restaurant/index.js';
+import deliverymanRoute from './src/api/admin/deliveryman/index.js';
 
 
 const app = express();
@@ -39,6 +40,7 @@ app.use("/user", userRoute);
 app.use("/admin", adminRoute);
 app.use("/admin", productRoute);
 app.use("/admin", restaurantRoute);
+app.use("/admin", deliverymanRoute);
 
 
 

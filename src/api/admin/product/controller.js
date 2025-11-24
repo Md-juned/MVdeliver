@@ -160,8 +160,7 @@ export const addOrEditProduct = async (req, res) => {
     const specificationsArray = parseField(req.body.specifications);
     const addonIdsArray = parseField(req.body.addon_ids);
 
-    const image = req.file?.path || null;
-
+    let image = null;
     let product;
 
     if (id) {
@@ -169,6 +168,8 @@ export const addOrEditProduct = async (req, res) => {
       product = await models.Product.findOne({ where: { id } });
       if (!product) return res.json({ status: false, message: "Product not found" });
 
+
+      image = req.file ? req.file.path : product.image;
       await product.update({
         name,
         category_id,
@@ -203,7 +204,7 @@ export const addOrEditProduct = async (req, res) => {
     if (sizesArray.length) {
       const sizeRows = sizesArray.map(size => ({
         product_id: product.id,
-        size_name: size.size_name || "Unknown",
+        size_name: size.size_name,
         price: size.price || 0,
       }));
       await models.ProductSize.bulkCreate(sizeRows);
@@ -359,6 +360,75 @@ export const getProducts = async (req, res) => {
   }
 };
 
+export const getSingleProduct = async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    if (!id) {
+      return res.status(400).json({
+        status: false,
+        message: "Product ID is required",
+      });
+    }
+
+    const product = await models.Product.findOne({
+      where: { id },
+      include: [
+        {
+          model: models.FoodCategory,
+          as: "foodCategory",
+          attributes: ["id", "name"],
+        },
+        {
+          model: models.Restaurant,
+          as: "restaurant",
+          attributes: ["id", "name"],
+        },
+        {
+          model: models.ProductSize,
+          as: "sizes",
+          attributes: ["id", "size_name", "price"],
+        },
+        {
+          model: models.ProductAddon,
+          as: "addons",
+          include: [
+            {
+              model: models.Addon,
+              as: "addon",
+              attributes: ["id", "name", "price"],
+            },
+          ],
+        },
+        {
+          model: models.ProductSpecification,
+          as: "specifications",
+          attributes: ["id", "name"],
+        },
+      ],
+    });
+
+    if (!product) {
+      return res.json({
+        status: false,
+        message: "Product not found",
+      });
+    }
+
+    return res.json({
+      status: true,
+      message: "Product details fetched successfully",
+      data: product,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      message: error.message,
+    });
+  }
+};
+
 export const deleteProduct = async (req, res) => {
   try {
     const product = await models.Product.findOne({ where: { id: req.body.id } });
@@ -439,6 +509,13 @@ export const getAddonList = async (req, res) => {
     if (!page || !limit) {
       const addons = await models.Addon.findAll({
         where,
+        include: [
+          {
+            model: models.Restaurant,
+            as: "restaurant",
+            attributes: ["id", "name"],
+          },
+        ],
         order: [["id", "DESC"]],
       });
 
@@ -457,6 +534,13 @@ export const getAddonList = async (req, res) => {
 
     const addons = await models.Addon.findAndCountAll({
       where,
+      include: [
+      {
+          model: models.Restaurant,
+          as: "restaurant",
+          attributes: ["id", "name"],
+        },
+      ],
       limit: parseInt(limit),
       offset,
       order: [["id", "DESC"]],

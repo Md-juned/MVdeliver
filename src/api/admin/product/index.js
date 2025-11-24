@@ -1,53 +1,54 @@
 import express from "express";
 import Joi from "joi";
 import { validate } from "../../../common/middleware/validation.middleware.js";
-import { addOrEditFoodCategory,
-           getFoodCategoryList,
-           deleteFoodCategory,
-           addOrEditProduct,
-           getProducts,
-           deleteProduct,
-           addOrEditAddon,
-           getAddonList,
-           deleteAddon
-           } from "./controller.js";
+import {
+  addOrEditFoodCategory,
+  getFoodCategoryList,
+  deleteFoodCategory,
+  addOrEditProduct,
+  getProducts,
+  getSingleProduct,
+  deleteProduct,
+  addOrEditAddon,
+  getAddonList,
+  deleteAddon,
+} from "./controller.js";
 import { authenticateToken } from "../../../common/middleware/jwtToken.middleware.js";
-import  upload from "../../../utils/multer.js"
-
+import upload from "../../../utils/multer.js";
 
 const router = express.Router();
 
 // Food category //
 
-router.post('/addOrEditFoodCategory',
-    authenticateToken,
-    upload("FoodCategory").single("image"),
-    validate(
-        Joi.object({
-           id: Joi.number().optional().allow(null, ""),
-           name: Joi.string().required(),
-           status: Joi.string().required(),
-           image: Joi.any().optional(), // ⭐ add this
-
-        })
-    ), addOrEditFoodCategory
+router.post(
+  "/addOrEditFoodCategory",
+  authenticateToken,
+  upload("FoodCategory").single("image"),
+  validate(
+    Joi.object({
+      id: Joi.number().optional().allow(null, ""),
+      name: Joi.string().required(),
+      status: Joi.string().required(),
+      image: Joi.any().optional(), // ⭐ add this
+    })
+  ),
+  addOrEditFoodCategory
 );
 
-router.get('/getFoodCategoryList',
-    authenticateToken,
-    getFoodCategoryList
+router.get("/getFoodCategoryList", authenticateToken, getFoodCategoryList);
+
+router.post(
+  "/deleteFoodCategory",
+  authenticateToken,
+  validate(
+    Joi.object({
+      id: Joi.number().required(),
+    })
+  ),
+  deleteFoodCategory
 );
 
-router.post('/deleteFoodCategory',
-    authenticateToken,
-    validate(
-        Joi.object({
-          id: Joi.number().required(),
-        })
-    ), deleteFoodCategory
-);
- 
- // Product //
+// Product //
 
 router.post(
   "/addOrEditProduct",
@@ -67,24 +68,36 @@ router.post(
       sizes: Joi.string().optional(),
       specifications: Joi.string().optional(),
       addon_ids: Joi.string().optional(),
-
     }).unknown(true)
   ),
   addOrEditProduct
 );
 
 router.get("/getProducts",
-  authenticateToken,
-  getProducts
+   authenticateToken,
+   getProducts
 );
 
-router.post('/deleteProduct',
-    authenticateToken,
-    validate(
-        Joi.object({
-          id: Joi.number().required(),
-        })
-    ), deleteProduct
+router.get(
+  "/getSingleProduct",
+  authenticateToken,
+  validate(
+    Joi.object({
+      id: Joi.number().required(),
+    })
+  ),
+  getSingleProduct
+);
+
+router.post(
+  "/deleteProduct",
+  authenticateToken,
+  validate(
+    Joi.object({
+      id: Joi.number().required(),
+    })
+  ),
+  deleteProduct
 );
 
 // Addon Product //
@@ -129,7 +142,5 @@ router.post(
   ),
   deleteAddon
 );
-
-
 
 export default router;

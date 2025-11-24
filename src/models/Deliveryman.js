@@ -1,8 +1,12 @@
 import { TableNames } from "../../src/common/constant/dbConstants.js";
 
+/**
+ * @param { import("sequelize").Sequelize } sequelize
+ * @param { import("sequelize").DataTypes } DataTypes
+ */
 export default (sequelize, DataTypes) => {
-  const Addon = sequelize.define(
-    "Addon",
+  const Deliveryman = sequelize.define(
+    "Deliveryman",
     {
       id: {
         type: DataTypes.INTEGER,
@@ -11,28 +15,40 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
       },
 
-      restaurant_id: {
+      first_name: {
         type: DataTypes.STRING(255),
         allowNull: false,
       },
 
-      name: {
+      email: {
         type: DataTypes.STRING(255),
-        allowNull: false,
+        allowNull: true,
       },
 
-      price: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
+      phone_number: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+      },
+
+      password: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+
+      image: {
+        type: DataTypes.STRING(500),
+        allowNull: true,
       },
 
       created_at: {
         type: DataTypes.DATE,
+        allowNull: true,
         defaultValue: DataTypes.NOW,
       },
 
       updated_at: {
         type: DataTypes.DATE,
+        allowNull: true,
         defaultValue: DataTypes.NOW,
       },
 
@@ -42,7 +58,7 @@ export default (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: TableNames.addons,
+      tableName: TableNames.deliverymen,
       timestamps: true,
       createdAt: "created_at",
       updatedAt: "updated_at",
@@ -51,16 +67,6 @@ export default (sequelize, DataTypes) => {
     }
   );
 
-  Addon.associate = (models) => {
-    Addon.belongsTo(models.Restaurant, {
-      foreignKey: "restaurant_id",
-      as: "restaurant",
-    });
-    Addon.hasMany(models.ProductAddon, {
-      foreignKey: "addon_id",
-      as: "product_addons",
-    });
-  };
-
-  return Addon;
+  return Deliveryman;
 };
+

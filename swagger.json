@@ -292,6 +292,33 @@
         }
       }
     },
+    "/admin/getSingleProduct": {
+      "get": {
+        "summary": "Get Single Product",
+        "tags": ["PRODUCT"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Product ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Single Product fetched successfully"
+          }
+        }
+      }
+    },
     "/admin/deleteProduct": {
       "post": {
         "summary": "Product delete",
@@ -787,9 +814,102 @@
           "500": { "description": "Internal Server Error" }
         }
       }
+    },
+    "/admin/addOrEditDeliveryman": {
+      "post": {
+        "summary": "Add or Update Deliveryman",
+        "tags": ["DELIVERYMAN"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "default": "",
+                    "description": "Send id for update, leave empty for add"
+                  },
+                  "first_name": {
+                    "type": "string",
+                    "default": "John"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "default": "john@example.com"
+                  },
+                  "phone_number": {
+                    "type": "string",
+                    "default": "9876543210"
+                  },
+                  "password": {
+                    "type": "string",
+                    "default": "secret"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getDeliverymanList": {
+      "get": {
+        "summary": "Get Deliveryman List",
+        "tags": ["DELIVERYMAN"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "default": "" } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteDeliveryman": {
+      "post": {
+        "summary": "Delete Deliveryman",
+        "tags": ["DELIVERYMAN"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "default": "" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
     }
-
-
 
   },
   "components": {
