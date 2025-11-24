@@ -11,5 +11,7 @@ export class TableNames {
     static productSpecification = "product_specifications"
     static cuisine = "cuisines"
     static city = "cities"
+    static favorites = "favorites"
+    static cart = "cart"
 
 }

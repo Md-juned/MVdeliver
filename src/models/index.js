@@ -12,6 +12,8 @@ import ProductSize from './ProductSize.js';
 import ProductSpecification from './ProductSpecification.js';
 import Cuisine from './Cuisine.js';
 import City from './City.js';
+import Favorite from './Favorite.js';
+import Cart from './Cart.js';
 
 
 
@@ -32,6 +34,8 @@ const models = {
     ProductSpecification: ProductSpecification(sequelize, Sequelize.DataTypes),
     Cuisine: Cuisine(sequelize, Sequelize.DataTypes),
     City: City(sequelize, Sequelize.DataTypes),
+    Favorite: Favorite(sequelize, Sequelize.DataTypes),
+    Cart: Cart(sequelize, Sequelize.DataTypes),
 
 };
 
