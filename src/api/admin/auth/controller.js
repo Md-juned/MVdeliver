@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import {generateToken} from "./service.js"
 
 
-
 export const logout = async (req, res) => {
   try {
     const { device_token } = req.body;

@@ -9,7 +9,6 @@ export async function up(knex) {
     return knex.schema.createTable("device_tokens", function (table) {
       table.bigIncrements("id").primary();
       table.bigInteger("user_id").unsigned().notNullable();
-      table.string("auth_token", 255).nullable();
       table.string("fcm_token", 255).nullable();
       table.string("device_token", 32).nullable();
       table.string("device_type", 32).nullable();

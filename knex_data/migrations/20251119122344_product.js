@@ -3,14 +3,27 @@
  * @returns { Promise<void> }
  */
 export async function up(knex) {
+    const exists = await knex.schema.hasTable("products");
+    if (exists) {
+        await knex.schema.dropTable("products");
+    }
+
     await knex.schema.createTable('products', function (table) {
         table.increments("id").primary();
 
         table.integer("category_id").unsigned().notNullable();
         table.integer("restaurant_id").unsigned().notNullable();
 
-        table.foreign("category_id").references("id").inTable("food_categories");
-        table.foreign("restaurant_id").references("id").inTable("restaurants");
+        table
+            .foreign("category_id")
+            .references("id")
+            .inTable("food_categories")
+            .onDelete("CASCADE");
+        table
+            .foreign("restaurant_id")
+            .references("id")
+            .inTable("restaurants")
+            .onDelete("CASCADE");
 
         table.string("image", 500).nullable();
         table.string("name", 255).notNullable();
