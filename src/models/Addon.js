@@ -26,6 +26,12 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
       },
 
+      status: {
+        type: DataTypes.ENUM("active", "inactive"),
+        defaultValue: "active",
+        allowNull: false,
+      },
+
       created_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,

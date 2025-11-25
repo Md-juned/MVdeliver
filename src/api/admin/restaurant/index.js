@@ -27,6 +27,8 @@ router.post(
     Joi.object({
       id: Joi.number().optional(),
       name: Joi.string().required(),
+      slug:Joi.string().optional().allow(null,""),
+      status:Joi.string().optional().allow(null,"")
     })
   ),
   addOrEditCuisine

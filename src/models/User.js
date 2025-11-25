@@ -28,7 +28,20 @@ export default (sequelize, DataTypes) => {
       },
       password: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true, // Nullable for social login users
+      },
+      social_id: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+      social_type: {
+        type: DataTypes.STRING(50),
+        allowNull: true,
+        comment: "google, facebook",
+      },
+      image: {
+        type: DataTypes.STRING(500),
+        allowNull: true,
       },
       phone: {
         type: DataTypes.STRING,

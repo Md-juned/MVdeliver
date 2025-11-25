@@ -11,7 +11,12 @@
     },
     {
       "url": "http://192.168.1.18:8080"
+    },
+    {
+      "url": "http://192.168.1.23:8080"
     }
+    
+    
   ],
   "security": [],
   "paths": {
@@ -266,20 +271,20 @@
                     "type": "string",
                     "format": "binary"
                   },
-                  "sizes": {
-                    "type": "string",
-                    "example": "[{\"size_name\":\"Large\",\"price\":80},{\"size_name\":\"Medium\",\"price\":120}]",
-                    "description": "JSON array of size objects"
+                  "sizes": { 
+                    "type": "string", 
+                    "example": "[{\"size_name\":\"Large\",\"price\":80},{\"size_name\":\"Medium\",\"price\":120}]", 
+                    "description": "JSON array of size objects" 
                   },
-                  "specifications": {
-                    "type": "string",
-                    "example": "[\"4 Chicken\",\"Spicy\"]",
-                    "description": "JSON array of specification strings"
+                  "specifications": { 
+                    "type": "string", 
+                    "example": "[\"4 Chicken\",\"Spicy\"]", 
+                    "description": "JSON array of specification strings" 
                   },
-                  "addon_ids": {
-                    "type": "string",
-                    "example": "[1,5]",
-                    "description": "JSON array of addon IDs"
+                  "addon_ids": { 
+                    "type": "string", 
+                    "example": "[1,5]", 
+                    "description": "JSON array of addon IDs" 
                   }
                 }
               }
@@ -1111,7 +1116,7 @@
         }
       }
     },
-    "/user/register": {
+        "/user/register": {
       "post": {
         "summary": "create user",
         "tags": [
@@ -1224,6 +1229,140 @@
         }
       }
     },
+    "/user/googleLogin": {
+      "post": {
+        "summary": "Google social login",
+        "tags": [
+          "USER"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "google_id": {
+                    "type": "string",
+                    "default": "1234567890",
+                    "description": "Google user ID from OAuth"
+                  },
+                  "email": {
+                    "type": "string",
+                    "default": "user@gmail.com"
+                  },
+                  "name": {
+                    "type": "string",
+                    "default": "John Doe",
+                    "description": "User's full name"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "uri",
+                    "default": "https://example.com/avatar.jpg",
+                    "description": "User's profile image URL"
+                  },
+                  "device": {
+                    "type": "string",
+                    "default": "ios"
+                  },
+                  "device_id": {
+                    "type": "string",
+                    "default": "23224rryty"
+                  },
+                  "fcm_token": {
+                    "type": "string",
+                    "default": "qweewewqe"
+                  }
+                },
+                "required": [
+                  "google_id",
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/facebookLogin": {
+      "post": {
+        "summary": "Facebook social login",
+        "tags": [
+          "USER"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "facebook_id": {
+                    "type": "string",
+                    "default": "1234567890",
+                    "description": "Facebook user ID from OAuth"
+                  },
+                  "email": {
+                    "type": "string",
+                    "default": "user@facebook.com",
+                    "description": "Email (optional for Facebook)"
+                  },
+                  "name": {
+                    "type": "string",
+                    "default": "John Doe",
+                    "description": "User's full name"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "uri",
+                    "default": "https://example.com/avatar.jpg",
+                    "description": "User's profile image URL"
+                  },
+                  "device": {
+                    "type": "string",
+                    "default": "ios"
+                  },
+                  "device_id": {
+                    "type": "string",
+                    "default": "23224rryty"
+                  },
+                  "fcm_token": {
+                    "type": "string",
+                    "default": "qweewewqe"
+                  }
+                },
+                "required": [
+                  "facebook_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/user/categories": {
       "get": {
         "summary": "List active categories",
@@ -1243,7 +1382,7 @@
         }
       }
     },
-    "/user/featured-products": {
+    "/user/featuredProducts": {
       "get": {
         "summary": "List featured products with filters and pagination",
         "tags": [
@@ -1428,7 +1567,257 @@
         }
       }
     },
-    "/user/toggle-favorite": {
+    "/user/addons": {
+      "get": {
+        "summary": "Get addons list with filters and pagination",
+        "tags": [
+          "USER"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "required": false,
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "required": false,
+            "description": "Items per page"
+          },
+          {
+            "name": "restaurant_id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "Filter by restaurant ID"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["active", "inactive"],
+              "default": "active"
+            },
+            "required": false,
+            "description": "Filter by status"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "Search by addon name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Addons fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "restaurant_id": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "price": {
+                            "type": "number"
+                          },
+                          "status": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer"
+                        },
+                        "currentPage": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/productSizes": {
+      "get": {
+        "summary": "Get product sizes list with filters and pagination",
+        "tags": [
+          "USER"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "required": false,
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "required": false,
+            "description": "Items per page"
+          },
+          {
+            "name": "product_id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false,
+            "description": "Filter by product ID"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "Search by size name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product sizes fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "product_id": {
+                            "type": "integer"
+                          },
+                          "size_name": {
+                            "type": "string"
+                          },
+                          "price": {
+                            "type": "number"
+                          },
+                          "product": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "image": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer"
+                        },
+                        "currentPage": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/toggleFavorite": {
       "post": {
         "summary": "Like/Dislike product (toggle favorite)",
         "tags": [
@@ -1521,7 +1910,7 @@
         }
       }
     },
-    "/user/add-to-cart": {
+    "/user/addToCart": {
       "post": {
         "summary": "Add product to cart",
         "tags": [
@@ -1543,9 +1932,36 @@
                     "type": "integer",
                     "default": 1
                   },
+                  "size_id": {
+                    "type": "integer",
+                    "default": null,
+                    "description": "Product size ID (optional)"
+                  },
                   "quantity": {
                     "type": "integer",
                     "default": 1
+                  },
+                  "addons": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "addon_id": {
+                          "type": "integer",
+                          "default": 1
+                        },
+                        "quantity": {
+                          "type": "integer",
+                          "default": 1
+                        }
+                      },
+                      "required": [
+                        "addon_id",
+                        "quantity"
+                      ]
+                    },
+                    "default": [],
+                    "description": "Array of addons with quantities"
                   }
                 },
                 "required": [
@@ -1597,7 +2013,7 @@
     },
     "/user/cart/update": {
       "put": {
-        "summary": "Update cart item quantity",
+        "summary": "Update cart item quantity and/or addons",
         "tags": [
           "USER"
         ],
@@ -1617,14 +2033,40 @@
                     "type": "integer",
                     "default": 1
                   },
+                  "size_id": {
+                    "type": "integer",
+                    "nullable": true,
+                    "description": "Optional - update product size (set to null to remove size)"
+                  },
                   "quantity": {
                     "type": "integer",
-                    "default": 1
+                    "default": 1,
+                    "description": "Optional - update quantity"
+                  },
+                  "addons": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "addon_id": {
+                          "type": "integer",
+                          "default": 1
+                        },
+                        "quantity": {
+                          "type": "integer",
+                          "default": 1
+                        }
+                      },
+                      "required": [
+                        "addon_id",
+                        "quantity"
+                      ]
+                    },
+                    "description": "Optional - update addons list"
                   }
                 },
                 "required": [
-                  "cart_id",
-                  "quantity"
+                  "cart_id"
                 ]
               }
             }

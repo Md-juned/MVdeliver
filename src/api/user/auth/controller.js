@@ -1,6 +1,7 @@
 import models from "../../../models/index.js";
 import { generateToken } from "./service.js";
 import bcrypt from "bcryptjs";
+import { Op } from "sequelize";
 
 export const register = async (req, res) => {
   try {
@@ -134,6 +135,207 @@ export const login = async (req, res) => {
       status: false,
       message: "Internal server error",
       error: err.message,
+    });
+  }
+};
+
+export const googleLogin = async (req, res) => {
+  try {
+    const {
+      google_id,
+      email,
+      name,
+      image,
+      fcm_token,
+      device_id,
+      device,
+    } = req.body;
+
+    if (!google_id || !email) {
+      return res.status(400).json({
+        status: false,
+        message: "Google ID and email are required.",
+      });
+    }
+
+    // Check if user exists by social_id or email
+    let user = await models.User.findOne({
+      where: {
+        [Op.or]: [
+          { social_id: google_id, social_type: "google" },
+          { email },
+        ],
+      },
+    });
+
+    if (user) {
+      // Update social login info if not set
+      if (!user.social_id || user.social_type !== "google") {
+        await user.update({
+          social_id: google_id,
+          social_type: "google",
+          image: image || user.image,
+          name: name || user.name,
+        });
+      } else {
+        // Update user info
+        await user.update({
+          name: name || user.name,
+          image: image || user.image,
+        });
+      }
+    } else {
+      // Create new user
+      user = await models.User.create({
+        name: name || email.split("@")[0],
+        email,
+        password: "", // No password for social login
+        social_id: google_id,
+        social_type: "google",
+        image: image || null,
+      });
+    }
+
+    // Handle device tokens
+    if (device_id || fcm_token) {
+      const existingDevice = await models.DeviceToken.findOne({
+        where: { user_id: user.id },
+      });
+
+      const payload = {
+        user_id: user.id,
+        device_type: device || null,
+        device_token: device_id || null,
+        fcm_token: fcm_token || null,
+      };
+
+      if (existingDevice) {
+        await existingDevice.update(payload);
+      } else {
+        await models.DeviceToken.create(payload);
+      }
+    }
+
+    const token = generateToken(user);
+    const userData = user.get({ plain: true });
+    delete userData.password;
+
+    return res.json({
+      status: true,
+      message: "Google login successful",
+      data: {
+        token,
+        ...userData,
+      },
+    });
+  } catch (error) {
+    console.error("Google Login Error:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+export const facebookLogin = async (req, res) => {
+  try {
+    const {
+      facebook_id,
+      email,
+      name,
+      image,
+      fcm_token,
+      device_id,
+      device,
+    } = req.body;
+
+    if (!facebook_id) {
+      return res.status(400).json({
+        status: false,
+        message: "Facebook ID is required.",
+      });
+    }
+
+    // Check if user exists by social_id or email
+    let user = await models.User.findOne({
+      where: {
+        [Op.or]: [
+          { social_id: facebook_id, social_type: "facebook" },
+          email ? { email } : { id: -1 }, // Only check email if provided
+        ],
+      },
+    });
+
+    if (user) {
+      // Update social login info if not set
+      if (!user.social_id || user.social_type !== "facebook") {
+        await user.update({
+          social_id: facebook_id,
+          social_type: "facebook",
+          image: image || user.image,
+          name: name || user.name,
+          email: email || user.email,
+        });
+      } else {
+        // Update user info
+        await user.update({
+          name: name || user.name,
+          image: image || user.image,
+          email: email || user.email,
+        });
+      }
+    } else {
+      // Create new user
+      const userName = name || (email ? email.split("@")[0] : `User_${facebook_id.slice(0, 8)}`);
+      user = await models.User.create({
+        name: userName,
+        email: email || `${facebook_id}@facebook.com`,
+        password: "", // No password for social login
+        social_id: facebook_id,
+        social_type: "facebook",
+        image: image || null,
+      });
+    }
+
+    // Handle device tokens
+    if (device_id || fcm_token) {
+      const existingDevice = await models.DeviceToken.findOne({
+        where: { user_id: user.id },
+      });
+
+      const payload = {
+        user_id: user.id,
+        device_type: device || null,
+        device_token: device_id || null,
+        fcm_token: fcm_token || null,
+      };
+
+      if (existingDevice) {
+        await existingDevice.update(payload);
+      } else {
+        await models.DeviceToken.create(payload);
+      }
+    }
+
+    const token = generateToken(user);
+    const userData = user.get({ plain: true });
+    delete userData.password;
+
+    return res.json({
+      status: true,
+      message: "Facebook login successful",
+      data: {
+        token,
+        ...userData,
+      },
+    });
+  } catch (error) {
+    console.error("Facebook Login Error:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error",
+      error: error.message,
     });
   }
 };

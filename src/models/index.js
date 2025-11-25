@@ -14,6 +14,7 @@ import Cuisine from './Cuisine.js';
 import City from './City.js';
 import Favorite from './Favorite.js';
 import Cart from './Cart.js';
+import CartAddon from './CartAddon.js';
 
 
 
@@ -36,6 +37,7 @@ const models = {
     City: City(sequelize, Sequelize.DataTypes),
     Favorite: Favorite(sequelize, Sequelize.DataTypes),
     Cart: Cart(sequelize, Sequelize.DataTypes),
+    CartAddon: CartAddon(sequelize, Sequelize.DataTypes),
 
 };
 

@@ -5,8 +5,8 @@ import { TableNames } from "../../src/common/constant/dbConstants.js";
  * @param { import("sequelize").DataTypes } DataTypes
  */
 export default (sequelize, DataTypes) => {
-  const Cart = sequelize.define(
-    "Cart",
+  const CartAddon = sequelize.define(
+    "CartAddon",
     {
       id: {
         type: DataTypes.INTEGER,
@@ -14,20 +14,20 @@ export default (sequelize, DataTypes) => {
         autoIncrement: true,
         allowNull: false,
       },
-      user_id: {
+      cart_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: TableNames.users,
+          model: "cart",
           key: "id",
         },
         onDelete: "CASCADE",
       },
-      product_id: {
+      addon_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: TableNames.product,
+          model: TableNames.addon,
           key: "id",
         },
         onDelete: "CASCADE",
@@ -37,15 +37,6 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 1,
       },
-      size_id: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-          model: TableNames.product_sizes,
-          key: "id",
-        },
-        onDelete: "SET NULL",
-      },
       created_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -54,40 +45,26 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
       },
-      deleted_at: {
-        type: DataTypes.DATE,
-        allowNull: true,
-      },
     },
     {
-      tableName: "cart",
+      tableName: "cart_addons",
       timestamps: true,
       createdAt: "created_at",
       updatedAt: "updated_at",
-      paranoid: true,
-      deletedAt: "deleted_at",
     }
   );
 
-  Cart.associate = (models) => {
-    Cart.belongsTo(models.User, {
-      foreignKey: "user_id",
-      as: "user",
-    });
-    Cart.belongsTo(models.Product, {
-      foreignKey: "product_id",
-      as: "product",
-    });
-    Cart.belongsTo(models.ProductSize, {
-      foreignKey: "size_id",
-      as: "size",
-    });
-    Cart.hasMany(models.CartAddon, {
+  CartAddon.associate = (models) => {
+    CartAddon.belongsTo(models.Cart, {
       foreignKey: "cart_id",
-      as: "addons",
+      as: "cart",
+    });
+    CartAddon.belongsTo(models.Addon, {
+      foreignKey: "addon_id",
+      as: "addon",
     });
   };
 
-  return Cart;
+  return CartAddon;
 };
 

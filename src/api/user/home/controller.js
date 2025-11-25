@@ -37,6 +37,7 @@ export const getFeaturedProducts = async (req, res) => {
       search,
     } = req.query;
 
+    // Get user ID if authenticated (optional authentication)
     const userId = req.user?.id || null;
 
     const where = { status: "active" };
@@ -117,9 +118,11 @@ export const getFeaturedProducts = async (req, res) => {
       favoriteProductIds = favorites.map((f) => f.product_id);
     }
 
+    // Always include is_favorite field in response (false if user not logged in or product not favorited)
     const productsWithFavorites = products.map((product) => {
       const productData = product.get({ plain: true });
-      productData.is_favorite = favoriteProductIds.includes(product.id);
+      // Set is_favorite: true if product is in user's favorites, false otherwise
+      productData.is_favorite = userId ? favoriteProductIds.includes(product.id) : false;
       return productData;
     });
 
@@ -266,6 +269,125 @@ export const getCuisines = async (req, res) => {
     });
   } catch (error) {
     console.error("getCuisines error:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+export const getAddons = async (req, res) => {
+  try {
+    const {
+      page = 1,
+      limit = 10,
+      restaurant_id,
+      status,
+      search,
+    } = req.query;
+
+    const where = {};
+
+    if (restaurant_id) {
+      where.restaurant_id = restaurant_id;
+    }
+
+    if (status) {
+      where.status = status;
+    } else {
+      // Default to active if status field exists
+      where.status = "active";
+    }
+
+    if (search) {
+      where.name = { [Op.like]: `%${search}%` };
+    }
+
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+
+    const { count, rows } = await models.Addon.findAndCountAll({
+      where,
+      attributes: ["id", "restaurant_id", "name", "price", "status"],
+      order: [["id", "ASC"]],
+      limit: parseInt(limit),
+      offset,
+    });
+
+    const addons = rows.map((addon) => addon.get({ plain: true }));
+
+    return res.json({
+      status: true,
+      message: "Addons fetched successfully",
+      data: addons,
+      pagination: {
+        total: count,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(count / parseInt(limit)),
+        limit: parseInt(limit),
+      },
+    });
+  } catch (error) {
+    console.error("getAddons error:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+export const getProductSizes = async (req, res) => {
+  try {
+    const {
+      page = 1,
+      limit = 10,
+      product_id,
+      search,
+    } = req.query;
+
+    const where = {};
+
+    if (product_id) {
+      where.product_id = product_id;
+    }
+
+    if (search) {
+      where.size_name = { [Op.like]: `%${search}%` };
+    }
+
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+
+    const { count, rows } = await models.ProductSize.findAndCountAll({
+      where,
+      attributes: ["id", "product_id", "size_name", "price"],
+      order: [["id", "ASC"]],
+      limit: parseInt(limit),
+      offset,
+      include: [
+        {
+          model: models.Product,
+          as: "product",
+          attributes: ["id", "name", "image"],
+        },
+      ],
+    });
+
+    const productSizes = rows.map((size) => size.get({ plain: true }));
+
+    return res.json({
+      status: true,
+      message: "Product sizes fetched successfully",
+      data: productSizes,
+      pagination: {
+        total: count,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(count / parseInt(limit)),
+        limit: parseInt(limit),
+      },
+    });
+  } catch (error) {
+    console.error("getProductSizes error:", error);
     return res.status(500).json({
       status: false,
       message: "Internal server error",

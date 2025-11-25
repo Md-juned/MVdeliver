@@ -1,5 +1,5 @@
 import express from "express";
-import { authenticateToken } from "../../../common/middleware/jwtToken.middleware.js";
+import { authenticateToken,optionalAuthenticateToken } from "../../../common/middleware/jwtToken.middleware.js";
 import { validate } from "../../../common/middleware/validation.middleware.js";
 import Joi from "joi";
 import {
@@ -12,18 +12,28 @@ import {
 const router = express.Router();
 
 router.post(
-  "/add-to-cart",
+  "/addToCart",
   authenticateToken,
   validate(
     Joi.object({
       product_id: Joi.number().integer().required(),
+      size_id: Joi.number().integer().optional().allow(null),
       quantity: Joi.number().integer().min(1).optional().default(1),
+      addons: Joi.array()
+        .items(
+          Joi.object({
+            addon_id: Joi.number().integer().required(),
+            quantity: Joi.number().integer().min(1).required(),
+          })
+        )
+        .optional()
+        .default([]),
     })
   ),
   addToCart
 );
 
-router.get("/cart", authenticateToken, getCart);
+router.get("/cart", optionalAuthenticateToken, getCart);
 
 router.put(
   "/cart/update",
@@ -31,7 +41,16 @@ router.put(
   validate(
     Joi.object({
       cart_id: Joi.number().integer().required(),
-      quantity: Joi.number().integer().min(1).required(),
+      size_id: Joi.number().integer().optional().allow(null),
+      quantity: Joi.number().integer().min(1).optional(),
+      addons: Joi.array()
+        .items(
+          Joi.object({
+            addon_id: Joi.number().integer().required(),
+            quantity: Joi.number().integer().min(1).required(),
+          })
+        )
+        .optional(),
     })
   ),
   updateCartItem

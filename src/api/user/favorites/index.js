@@ -7,7 +7,7 @@ import { toggleFavorite, getFavorites } from "./controller.js";
 const router = express.Router();
 
 router.post(
-  "/toggle-favorite",
+  "/toggleFavorite",
   authenticateToken,
   validate(
     Joi.object({
