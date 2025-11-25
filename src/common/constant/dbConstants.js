@@ -2,6 +2,7 @@ export class TableNames {
     static users = "users"
     static device_tokens = "device_tokens"
     static admin = "admin"
+    // Legacy + canonical aliases (different modules referenced both styles)
     static foodCategory = "food_categories"
     static product = "products"
     static restaurants = "restaurants"
@@ -11,9 +12,12 @@ export class TableNames {
     static productSpecification = "product_specifications"
     static cuisine = "cuisines"
     static city = "cities"
+    static deliverymen = "deliverymen"
     static favorites = "favorites"
     static cart = "cart"
     static cart_addons = "cart_addons"
     static product_sizes = "product_sizes"
-
+    static coupons = "coupons"
+    static offers = "offers"
+    static offerProducts = "offer_products"
 }

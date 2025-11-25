@@ -20,6 +20,12 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
       },
 
+      slug: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+        unique: true,
+      },
+
       image: {
         type: DataTypes.STRING(500),
         allowNull: true,

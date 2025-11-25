@@ -35,6 +35,12 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
       },
 
+      slug: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+        unique: true,
+      },
+
       short_description: {
         type: DataTypes.TEXT, 
         allowNull: false,
@@ -47,6 +53,18 @@ export default (sequelize, DataTypes) => {
       offer_price: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
+      },
+
+      is_featured: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+
+      visibility: {
+        type: DataTypes.ENUM("visible", "hidden"),
+        allowNull: false,
+        defaultValue: "visible",
       },
 
       status: {
@@ -73,7 +91,7 @@ export default (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: TableNames.products,
+      tableName: TableNames.product,
       timestamps: true,
       createdAt: "created_at",
       updatedAt: "updated_at",

@@ -1,10 +1,19 @@
 import models from "../../../models/index.js";
+const { Op } = models.Sequelize;
+import { deleteFile } from "../../../utils/fileUtils.js";
+
+const normalizeSlug = (value) => {
+  if (value === undefined || value === null) return undefined;
+  const trimmed = String(value).trim();
+  return trimmed.length ? trimmed : undefined;
+};
 
 // ---- Cuisine ----
 
 export const addOrEditCuisine = async (req, res) => {
   try {
     const { id, name, status } = req.body;
+    const slugInput = normalizeSlug(req.body.slug);
     const image = req.file?.path || null;
 
     if (id) {
@@ -14,11 +23,28 @@ export const addOrEditCuisine = async (req, res) => {
         return res.json({ status: false, message: "Cuisine not found" });
       }
 
+      // Handle image update
+      let finalImage = existing.image; // Default to existing image
+      if (image) {
+        // New image uploaded - delete old one
+        if (existing.image) {
+          await deleteFile(existing.image);
+        }
+        finalImage = image;
+      }
+
       // Update with fallback
-      await existing.update({
+      const updatePayload = {
         name: name ?? existing.name,
-        image: image ? image : existing.image,
-      });
+        image: finalImage,
+        status: status ? status : existing.status,
+      };
+
+      if (slugInput !== undefined) {
+        updatePayload.slug = slugInput;
+      }
+
+      await existing.update(updatePayload);
 
       return res.json({
         status: true,
@@ -30,6 +56,7 @@ export const addOrEditCuisine = async (req, res) => {
     await models.Cuisine.create({
       name,
       image,
+      slug: slugInput,
     });
 
     return res.json({
@@ -137,10 +164,20 @@ export const addOrEditCity = async (req, res) => {
         return res.json({ status: false, message: "City not found" });
       }
 
+      // Handle image update
+      let finalImage = existing.image; // Default to existing image
+      if (image) {
+        // New image uploaded - delete old one
+        if (existing.image) {
+          await deleteFile(existing.image);
+        }
+        finalImage = image;
+      }
+
       // Update with fallback
       await existing.update({
         name: name ?? existing.name,
-        image: image ? image : existing.image,
+        image: finalImage,
       });
 
       return res.json({
@@ -246,24 +283,60 @@ export const deleteCity = async (req, res) => {
 
 export const addOrEditRestaurant = async (req, res) => {
   try {
-    const data = req.body;
+    const data = { ...req.body };
+    const slugInput = normalizeSlug(data.slug);
 
-    // console.log("------------==============------------",data);
-
-    // Handle images
-    if (req.files?.logo_image?.length) {
-      data.logo_image = req.files.logo_image[0].path; 
-    }
-
-    if (req.files?.cover_image?.length) {
-      data.cover_image = req.files.cover_image[0].path;
+    if (slugInput !== undefined) {
+      data.slug = slugInput;
+    } else {
+      delete data.slug;
     }
 
     let result;
+    let oldRestaurant = null;
 
     if (data.id) {
-      // Update
-      await models.Restaurant.update(data, { where: { id: data.id } });
+      // Update - fetch existing restaurant first
+      oldRestaurant = await models.Restaurant.findByPk(data.id);
+      if (!oldRestaurant) {
+        return res.json({ status: false, message: "Restaurant not found" });
+      }
+
+      // Handle images - only update if new images are provided
+      if (req.files?.logo_image?.length) {
+        if (oldRestaurant.logo_image) {
+          await deleteFile(oldRestaurant.logo_image);
+        }
+        data.logo_image = req.files.logo_image[0].path;
+      } else {
+        delete data.logo_image;
+      }
+
+      if (req.files?.cover_image?.length) {
+        if (oldRestaurant.cover_image) {
+          await deleteFile(oldRestaurant.cover_image);
+        }
+        data.cover_image = req.files.cover_image[0].path;
+      } else {
+        delete data.cover_image;
+      }
+
+      // Remove id from update data
+      const updateData = { ...data };
+      delete updateData.id;
+
+      // Remove undefined, empty string, or null fields so they don't update
+      Object.keys(updateData).forEach((key) => {
+        if (
+          updateData[key] === undefined ||
+          updateData[key] === "" ||
+          updateData[key] === null
+        ) {
+          delete updateData[key];
+        }
+      });
+
+      await models.Restaurant.update(updateData, { where: { id: data.id } });
       result = await models.Restaurant.findByPk(data.id);
 
       return res.json({
@@ -272,7 +345,15 @@ export const addOrEditRestaurant = async (req, res) => {
         data: result,
       });
     } else {
-      // Create
+      // Create - handle images for new restaurant
+      if (req.files?.logo_image?.length) {
+        data.logo_image = req.files.logo_image[0].path;
+      }
+
+      if (req.files?.cover_image?.length) {
+        data.cover_image = req.files.cover_image[0].path;
+      }
+
       result = await models.Restaurant.create(data);
     }
 
@@ -285,6 +366,7 @@ export const addOrEditRestaurant = async (req, res) => {
     return res.status(500).json({ status: false, message: err.message });
   }
 };
+
 
 export const getRestaurant = async (req, res) => {
   try {

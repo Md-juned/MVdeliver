@@ -24,6 +24,12 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
     },
 
+    slug: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      unique: true,
+    },
+
     status: {
       type: DataTypes.ENUM("active", "inactive"),
       allowNull: false,
@@ -48,7 +54,7 @@ export default (sequelize, DataTypes) => {
     },
 
   }, {
-    tableName: TableNames.food_categories,  // 🔥 Table name same
+    tableName: TableNames.foodCategory,
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",

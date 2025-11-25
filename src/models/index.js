@@ -15,6 +15,10 @@ import City from './City.js';
 import Favorite from './Favorite.js';
 import Cart from './Cart.js';
 import CartAddon from './CartAddon.js';
+import Deliveryman from './Deliveryman.js';
+import Coupon from './Coupon.js';
+import Offer from './Offer.js';
+import OfferProduct from './OfferProduct.js';
 
 
 
@@ -38,6 +42,10 @@ const models = {
     Favorite: Favorite(sequelize, Sequelize.DataTypes),
     Cart: Cart(sequelize, Sequelize.DataTypes),
     CartAddon: CartAddon(sequelize, Sequelize.DataTypes),
+    Deliveryman: Deliveryman(sequelize, Sequelize.DataTypes),
+    Coupon: Coupon(sequelize, Sequelize.DataTypes),
+    Offer: Offer(sequelize, Sequelize.DataTypes),
+    OfferProduct: OfferProduct(sequelize, Sequelize.DataTypes),
 
 };
 

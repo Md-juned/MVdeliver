@@ -1,11 +1,20 @@
 export const validate = (schema) => {
   return (req, res, next) => {
     const data = { ...req.body, ...req.params, ...req.query };
-    console.log(data)
+    console.log("Validation data:", JSON.stringify(data, null, 2));
+    
     const { error } = schema.validate(data, { abortEarly: false });
 
     if (error) {
-      return res.status(400).json({ errors: error.details.map((err) => err.message) });
+      console.log("Validation errors:", error.details);
+      const errorMessages = error.details.map((err) => {
+        return `${err.path.join('.')}: ${err.message}`;
+      }).join(", ");
+      
+      return res.json({ 
+        status: false, 
+        message: errorMessages || "Validation error" 
+      });
     }
 
     next();

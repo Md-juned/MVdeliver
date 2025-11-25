@@ -21,6 +21,12 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
       },
 
+      slug: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+        unique: true,
+      },
+
       logo_image: {
         type: DataTypes.STRING(500),
         allowNull: true,
@@ -112,12 +118,12 @@ export default (sequelize, DataTypes) => {
       },
 
       min_food_processing_time: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.TIME,
         allowNull: true,
       },
 
       max_food_processing_time: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.TIME,
         allowNull: true,
       },
 

@@ -27,8 +27,8 @@ router.post(
     Joi.object({
       id: Joi.number().optional(),
       name: Joi.string().required(),
-      slug:Joi.string().optional().allow(null,""),
-      status:Joi.string().optional().allow(null,"")
+      slug: Joi.string().optional(),
+      status: Joi.string().optional().valid('active', 'hidden'),
     })
   ),
   addOrEditCuisine
@@ -41,7 +41,7 @@ router.get(
     Joi.object({
       page: Joi.number().optional(),
       limit: Joi.number().optional(),
-      search: Joi.string().optional(),
+      search: Joi.string().optional().allow("",null),
       status: Joi.string().optional(),
     })
   ),
@@ -81,7 +81,7 @@ router.get(
     Joi.object({
       page: Joi.number().optional(),
       limit: Joi.number().optional(),
-      search: Joi.string().optional(),
+      search: Joi.string().optional().allow("",null),
       status: Joi.string().optional(),
     })
   ),
@@ -111,41 +111,41 @@ router.post(
   validate(
     Joi.object({
       id: Joi.number().optional(),
-
-      // Basic Info
+  
       name: Joi.string().required(),
-
+      slug: Joi.string().allow("").optional(),
+  
       city_id: Joi.number().optional(),
       cuisine_id: Joi.number().optional(),
-
-      whatsapp_phone: Joi.string().optional(),
-      address: Joi.string().optional(),
+  
+      whatsapp_phone: Joi.string().allow("").optional(),
+      address: Joi.string().allow("").optional(),
       latitude: Joi.number().optional(),
       longitude: Joi.number().optional(),
       max_delivery_distance: Joi.number().optional(),
-
-      owner_name: Joi.string().optional(),
-      owner_email: Joi.string().optional(),
-      owner_phone: Joi.string().optional(),
-
-      account_name: Joi.string().optional(),
-      account_email: Joi.string().optional(),
-      account_password: Joi.string().optional(),
-
-      opening_time: Joi.string().optional(),
-      closing_time: Joi.string().optional(),
-      min_food_processing_time: Joi.string().optional(),
-      max_food_processing_time: Joi.string().optional(),
-      time_slot_seprated: Joi.string().optional(),
-
-      tags: Joi.string().optional(),
+  
+      owner_name: Joi.string().allow("").optional(),
+      owner_email: Joi.string().allow("").optional(),
+      owner_phone: Joi.string().allow("").optional(),
+  
+      account_name: Joi.string().allow("").optional(),
+      account_email: Joi.string().allow("").optional(),
+      account_password: Joi.string().allow("",null).optional(),  // FIXED
+  
+      opening_time: Joi.string().allow("").optional(),
+      closing_time: Joi.string().allow("").optional(),
+      min_food_processing_time: Joi.string().allow("").optional(),
+      max_food_processing_time: Joi.string().allow("").optional(),
+      time_slot_seprated: Joi.string().allow("").optional(),
+  
+      tags: Joi.string().allow("").optional(),
       is_featured: Joi.boolean().optional(),
       pickup_order: Joi.boolean().optional(),
       delivery_order: Joi.boolean().optional(),
       approval_status: Joi.string().valid("pending", "approved", "rejected").optional(),
       is_trusted: Joi.boolean().optional(),
     })
-  ),
+   ),
   addOrEditRestaurant
 );
 
@@ -156,9 +156,8 @@ router.get(
     Joi.object({
       page: Joi.number().optional(),
       limit: Joi.number().optional(),
-      search: Joi.string().optional(),
+      search: Joi.string().optional().allow("",null),
       status: Joi.string().optional(),
-      city_id: Joi.number().optional(),
     })
   ),
   getRestaurant

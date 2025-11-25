@@ -58,6 +58,10 @@ export default (sequelize, DataTypes) => {
   );
 
   Addon.associate = (models) => {
+    Addon.belongsTo(models.Restaurant, {
+      foreignKey: "restaurant_id",
+      as: "restaurant",
+    });
     Addon.hasMany(models.ProductAddon, {
       foreignKey: "addon_id",
       as: "product_addons",
