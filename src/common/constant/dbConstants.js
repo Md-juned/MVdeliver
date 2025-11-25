@@ -15,4 +15,7 @@ export class TableNames {
     static deliverymen = "deliverymen"
     static favorites = "favorites"
     static cart = "cart"
+    static coupons = "coupons"
+    static offers = "offers"
+    static offerProducts = "offer_products"
 }

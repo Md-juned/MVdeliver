@@ -10,7 +10,7 @@
       "url": "http://localhost:8080"
     },
     {
-      "url": "http://192.168.1.18:8080"
+      "url": "http://192.168.1.35:8080"
     }
   ],
   "security": [],
@@ -133,6 +133,11 @@
                   "name": {
                     "type": "string",
                     "default": "Fruits"
+                  },
+                  "slug": {
+                    "type": "string",
+                    "default": "fruits",
+                    "description": "Optional unique identifier"
                   },
                   "image": {
                     "type": "string",
@@ -286,6 +291,11 @@
                   "name": {
                     "type": "string",
                     "default": "Oreo Shake"
+                  },
+                  "slug": {
+                    "type": "string",
+                    "default": "oreo-shake",
+                    "description": "Optional unique identifier"
                   },
                   "category_id": {
                     "type": "integer",
@@ -657,6 +667,11 @@
                     "type": "string",
                     "default": "Indian"
                   },
+                  "slug": {
+                    "type": "string",
+                    "default": "indian",
+                    "description": "Optional unique identifier"
+                  },
                   "image": {
                     "type": "string",
                     "format": "binary"
@@ -952,6 +967,11 @@
                   "name": {
                     "type": "string",
                     "default": "Retro Chef"
+                  },
+                  "slug": {
+                    "type": "string",
+                    "default": "retro-chef",
+                    "description": "Optional unique identifier"
                   },
                   "city_id": {
                     "type": "integer",
@@ -1383,6 +1403,268 @@
                 "properties": {
                   "id": { "type": "integer", "default": "" }
                 }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOrEditCoupon": {
+      "post": {
+        "summary": "Add or Edit Coupon",
+        "tags": ["COUPON"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "description": "Coupon ID for update" },
+                  "name": { "type": "string", "default": "New Year" },
+                  "code": { "type": "string", "default": "newyear25" },
+                  "expired_date": { "type": "string", "format": "date", "default": "2025-05-31" },
+                  "min_purchase_price": { "type": "number", "default": 5.00 },
+                  "discount_type": { "type": "string", "enum": ["amount", "percentage"], "default": "percentage" },
+                  "discount": { "type": "number", "default": 10.00 },
+                  "status": { "type": "string", "enum": ["active", "inactive"], "default": "active" }
+                },
+                "required": ["name", "code", "expired_date", "min_purchase_price", "discount_type", "discount"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getCouponList": {
+      "get": {
+        "summary": "Get Coupon List",
+        "tags": ["COUPON"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "default": "" } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getSingleCoupon": {
+      "get": {
+        "summary": "Get Single Coupon",
+        "tags": ["COUPON"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteCoupon": {
+      "post": {
+        "summary": "Delete Coupon",
+        "tags": ["COUPON"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOrEditOffer": {
+      "post": {
+        "summary": "Add or Edit Offer",
+        "tags": ["OFFER"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "description": "Offer ID for update" },
+                  "title": { "type": "string", "default": "Enjoy 25% Discount!" },
+                  "description": { "type": "string", "default": "Upcoming Black Friday Offer" },
+                  "offer_percentage": { "type": "number", "default": 5 },
+                  "end_time": { "type": "string", "format": "date-time", "default": "2025-06-30T00:00:00Z" },
+                  "status": { "type": "string", "enum": ["active", "inactive"], "default": "active" }
+                },
+                "required": ["title", "offer_percentage", "end_time"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getOfferList": {
+      "get": {
+        "summary": "Get Offer List",
+        "tags": ["OFFER"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "default": "" } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getSingleOffer": {
+      "get": {
+        "summary": "Get Single Offer",
+        "tags": ["OFFER"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteOffer": {
+      "post": {
+        "summary": "Delete Offer",
+        "tags": ["OFFER"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOfferProduct": {
+      "post": {
+        "summary": "Add Product to Offer",
+        "tags": ["OFFER PRODUCT"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "offer_id": { "type": "integer" },
+                  "product_id": { "type": "integer" }
+                },
+                "required": ["offer_id", "product_id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getOfferProductList": {
+      "get": {
+        "summary": "Get Offer Product List",
+        "tags": ["OFFER PRODUCT"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "offer_id", "in": "query", "schema": { "type": "integer" } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "default": "" } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteOfferProduct": {
+      "post": {
+        "summary": "Delete Offer Product",
+        "tags": ["OFFER PRODUCT"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" }
+                },
+                "required": ["id"]
               }
             }
           }

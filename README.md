@@ -12,6 +12,6 @@ npx knex seed:run --specific=filename.js
 
 
 Access the API on browser - 
-http://localhost:3000/documentation || https://${host_name}:${port_name}/documentation
+http://localhost:8080/documentation || https://${host_name}:${port_name}/documentation
 
 

@@ -5,8 +5,8 @@ import { TableNames } from "../../src/common/constant/dbConstants.js";
  * @param { import("sequelize").DataTypes } DataTypes
  */
 export default (sequelize, DataTypes) => {
-  const Cuisine = sequelize.define(
-    "Cuisine",
+  const OfferProduct = sequelize.define(
+    "OfferProduct",
     {
       id: {
         type: DataTypes.INTEGER,
@@ -15,35 +15,25 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
       },
 
-      name: {
-        type: DataTypes.STRING(255),
+      offer_id: {
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
       },
 
-      slug: {
-        type: DataTypes.STRING(255),
-        allowNull: true,
-        unique: true,
-      },
-
-      image: {
-        type: DataTypes.STRING(500),
-        allowNull: true,
-      },
-
-      status: {
-        type: DataTypes.STRING(50),
+      product_id: {
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
-        defaultValue: "active",
       },
 
       created_at: {
         type: DataTypes.DATE,
+        allowNull: true,
         defaultValue: DataTypes.NOW,
       },
 
       updated_at: {
         type: DataTypes.DATE,
+        allowNull: true,
         defaultValue: DataTypes.NOW,
       },
 
@@ -53,7 +43,7 @@ export default (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: TableNames.cuisines, // Add name in your dbConstants
+      tableName: TableNames.offerProducts,
       timestamps: true,
       createdAt: "created_at",
       updatedAt: "updated_at",
@@ -62,12 +52,17 @@ export default (sequelize, DataTypes) => {
     }
   );
 
-  Cuisine.associate = (models) => {
-    Cuisine.hasMany(models.Restaurant, {
-      foreignKey: "cuisine_id",
-      as: "restaurants",
+  OfferProduct.associate = (models) => {
+    OfferProduct.belongsTo(models.Offer, {
+      foreignKey: "offer_id",
+      as: "offer",
+    });
+    OfferProduct.belongsTo(models.Product, {
+      foreignKey: "product_id",
+      as: "product",
     });
   };
 
-  return Cuisine;
+  return OfferProduct;
 };
+

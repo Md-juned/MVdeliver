@@ -35,6 +35,12 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
       },
 
+      slug: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+        unique: true,
+      },
+
       short_description: {
         type: DataTypes.TEXT, 
         allowNull: false,
@@ -85,7 +91,7 @@ export default (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: TableNames.products,
+      tableName: TableNames.product,
       timestamps: true,
       createdAt: "created_at",
       updatedAt: "updated_at",

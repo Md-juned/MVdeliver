@@ -3,8 +3,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const config = {
-    NODE_ENV: process.env.NODE_ENV,
-    HOST: process.env.HOST,
+    NODE_ENV: process.env.NODE_ENV || 'development',
+    HOST: process.env.HOST || 'localhost',
     PORT: process.env.PORT || 3000,
     DB_HOST: process.env.DB_HOST,
     DB_PORT: process.env.DB_PORT,

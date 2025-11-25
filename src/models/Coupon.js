@@ -5,8 +5,8 @@ import { TableNames } from "../../src/common/constant/dbConstants.js";
  * @param { import("sequelize").DataTypes } DataTypes
  */
 export default (sequelize, DataTypes) => {
-  const Cuisine = sequelize.define(
-    "Cuisine",
+  const Coupon = sequelize.define(
+    "Coupon",
     {
       id: {
         type: DataTypes.INTEGER,
@@ -20,30 +20,49 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
       },
 
-      slug: {
-        type: DataTypes.STRING(255),
-        allowNull: true,
+      code: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
         unique: true,
       },
 
-      image: {
-        type: DataTypes.STRING(500),
-        allowNull: true,
+      expired_date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+      },
+
+      min_purchase_price: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        defaultValue: 0,
+      },
+
+      discount_type: {
+        type: DataTypes.STRING(20),
+        allowNull: false,
+        defaultValue: "amount",
+      },
+
+      discount: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
       },
 
       status: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.ENUM("active", "inactive"),
         allowNull: false,
         defaultValue: "active",
       },
 
       created_at: {
         type: DataTypes.DATE,
+        allowNull: true,
         defaultValue: DataTypes.NOW,
       },
 
       updated_at: {
         type: DataTypes.DATE,
+        allowNull: true,
         defaultValue: DataTypes.NOW,
       },
 
@@ -53,7 +72,7 @@ export default (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: TableNames.cuisines, // Add name in your dbConstants
+      tableName: TableNames.coupons,
       timestamps: true,
       createdAt: "created_at",
       updatedAt: "updated_at",
@@ -62,12 +81,6 @@ export default (sequelize, DataTypes) => {
     }
   );
 
-  Cuisine.associate = (models) => {
-    Cuisine.hasMany(models.Restaurant, {
-      foreignKey: "cuisine_id",
-      as: "restaurants",
-    });
-  };
-
-  return Cuisine;
+  return Coupon;
 };
+

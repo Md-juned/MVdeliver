@@ -1,6 +1,7 @@
 import models from "../../../models/index.js";
-
 const { Op } = models.Sequelize;
+import { deleteFile } from "../../../utils/fileUtils.js";
+import bcrypt from "bcryptjs";
 
 export const addOrEditDeliveryman = async (req, res) => {
   try {
@@ -11,10 +12,6 @@ export const addOrEditDeliveryman = async (req, res) => {
       password: req.body.password,
       phone_number: req.body.phone_number,
     };
-
-    if (req.file?.path) {
-      payload.image = req.file.path;
-    }
 
     Object.keys(payload).forEach((key) => {
       if (payload[key] === undefined || payload[key] === "") {
@@ -28,7 +25,20 @@ export const addOrEditDeliveryman = async (req, res) => {
         return res.json({ status: false, message: "Deliveryman not found" });
       }
 
-      if (!payload.password) {
+      // Handle image update
+      if (req.file?.path) {
+        // New image uploaded - delete old one
+        if (existing.image) {
+          await deleteFile(existing.image);
+        }
+        payload.image = req.file.path;
+      }
+      // If no new image, preserve existing image (don't include image in payload)
+
+      // Hash password if provided (for update)
+      if (payload.password) {
+        payload.password = await bcrypt.hash(payload.password, 10);
+      } else {
         delete payload.password;
       }
 
@@ -41,6 +51,16 @@ export const addOrEditDeliveryman = async (req, res) => {
         message: "Deliveryman updated successfully",
         data: safeExisting,
       });
+    }
+
+    // Create new deliveryman
+    if (req.file?.path) {
+      payload.image = req.file.path;
+    }
+
+    // Hash password if provided (for new deliveryman)
+    if (payload.password) {
+      payload.password = await bcrypt.hash(payload.password, 10);
     }
 
     const created = await models.Deliveryman.create(payload);

@@ -52,7 +52,7 @@ router.get(
     Joi.object({
       page: Joi.number().optional(),
       limit: Joi.number().optional(),
-      search: Joi.string().optional().allow(""),
+      search: Joi.string().optional().allow("",null),
     }),
     "query"
   ),

@@ -5,8 +5,8 @@ import { TableNames } from "../../src/common/constant/dbConstants.js";
  * @param { import("sequelize").DataTypes } DataTypes
  */
 export default (sequelize, DataTypes) => {
-  const Cuisine = sequelize.define(
-    "Cuisine",
+  const Offer = sequelize.define(
+    "Offer",
     {
       id: {
         type: DataTypes.INTEGER,
@@ -15,35 +15,41 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
       },
 
-      name: {
+      title: {
         type: DataTypes.STRING(255),
         allowNull: false,
       },
 
-      slug: {
-        type: DataTypes.STRING(255),
+      description: {
+        type: DataTypes.TEXT,
         allowNull: true,
-        unique: true,
       },
 
-      image: {
-        type: DataTypes.STRING(500),
-        allowNull: true,
+      offer_percentage: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: false,
+      },
+
+      end_time: {
+        type: DataTypes.DATE,
+        allowNull: false,
       },
 
       status: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.ENUM("active", "inactive"),
         allowNull: false,
         defaultValue: "active",
       },
 
       created_at: {
         type: DataTypes.DATE,
+        allowNull: true,
         defaultValue: DataTypes.NOW,
       },
 
       updated_at: {
         type: DataTypes.DATE,
+        allowNull: true,
         defaultValue: DataTypes.NOW,
       },
 
@@ -53,7 +59,7 @@ export default (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: TableNames.cuisines, // Add name in your dbConstants
+      tableName: TableNames.offers,
       timestamps: true,
       createdAt: "created_at",
       updatedAt: "updated_at",
@@ -62,12 +68,13 @@ export default (sequelize, DataTypes) => {
     }
   );
 
-  Cuisine.associate = (models) => {
-    Cuisine.hasMany(models.Restaurant, {
-      foreignKey: "cuisine_id",
-      as: "restaurants",
+  Offer.associate = (models) => {
+    Offer.hasMany(models.OfferProduct, {
+      foreignKey: "offer_id",
+      as: "offerProducts",
     });
   };
 
-  return Cuisine;
+  return Offer;
 };
+

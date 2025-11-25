@@ -29,6 +29,7 @@ router.post(
     Joi.object({
       id: Joi.number().optional().allow(null, ""),
       name: Joi.string().required(),
+      slug: Joi.string().optional(),
       status: Joi.string().required(),
       image: Joi.any().optional(), // ⭐ add this
     })
@@ -36,7 +37,11 @@ router.post(
   addOrEditFoodCategory
 );
 
-router.get("/getFoodCategoryList", authenticateToken, getFoodCategoryList);
+router.get(
+  "/getFoodCategoryList",
+   authenticateToken,
+   getFoodCategoryList
+);
 
 router.post(
   "/deleteFoodCategory",
@@ -57,20 +62,39 @@ router.post(
   upload("products").single("image"),
   validate(
     Joi.object({
-      id: Joi.string().optional(),
+      id: Joi.alternatives().try(Joi.string(), Joi.number()).optional().allow(null, ""),
       name: Joi.string().required(),
-      category_id: Joi.number().required(),
-      restaurant_id: Joi.number().required(),
-      price: Joi.number().required(),
-      offer_price: Joi.number().optional(),
-      short_description: Joi.string().optional(),
-      status: Joi.string().optional(),
-      is_featured: Joi.boolean().optional(),
-      visibility: Joi.string().valid("visible", "hidden").optional(),
+      category_id: Joi.alternatives().try(Joi.number(), Joi.string().pattern(/^\d+$/)).required().messages({
+        'any.required': 'category_id is required',
+        'string.pattern.base': 'category_id must be a valid number'
+      }),
+      restaurant_id: Joi.alternatives().try(Joi.number(), Joi.string().pattern(/^\d+$/)).required().messages({
+        'any.required': 'restaurant_id is required',
+        'string.pattern.base': 'restaurant_id must be a valid number'
+      }),
+      price: Joi.alternatives().try(Joi.number(), Joi.string().pattern(/^\d+(\.\d+)?$/)).required().messages({
+        'any.required': 'price is required',
+        'string.pattern.base': 'price must be a valid number'
+      }),
+      offer_price: Joi.alternatives().try(Joi.number(), Joi.string().pattern(/^\d+(\.\d+)?$/)).optional().allow(null, ""),
+      short_description: Joi.string().optional().allow(null, ""),
+      slug: Joi.string().optional().allow(null, ""),
+      status: Joi.string().optional().allow(null, ""),
+      is_featured: Joi.alternatives().try(Joi.boolean(), Joi.string(), Joi.number()).optional(),
+      visibility: Joi.string().valid("visible", "hidden").optional().allow(null, ""),
       // Accept direct arrays of objects / strings / integers
-      sizes: Joi.string().optional(),
-      specifications: Joi.string().optional(),
-      addon_ids: Joi.string().optional(),
+      sizes: Joi.alternatives().try(
+        Joi.string().optional().allow(null, ""),
+        Joi.array().optional().allow(null)
+      ),
+      specifications: Joi.alternatives().try(
+        Joi.string().optional().allow(null, ""),
+        Joi.array().optional().allow(null)
+      ),
+      addon_ids: Joi.alternatives().try(
+        Joi.string().optional().allow(null, ""),
+        Joi.array().items(Joi.alternatives().try(Joi.number(), Joi.string().pattern(/^\d+$/))).optional().allow(null)
+      ),
     }).unknown(true)
   ),
   addOrEditProduct

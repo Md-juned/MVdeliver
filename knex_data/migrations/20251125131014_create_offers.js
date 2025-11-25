@@ -3,16 +3,16 @@
  * @returns { Promise<void> }
  */
 export async function up(knex) {
-  const exists = await knex.schema.hasTable("deliverymen");
+  const exists = await knex.schema.hasTable("offers");
 
   if (!exists) {
-    await knex.schema.createTable("deliverymen", function (table) {
+    await knex.schema.createTable("offers", function (table) {
       table.increments("id").primary();
-      table.string("first_name", 255).notNullable();
-      table.string("email", 255).nullable();
-      table.string("phone_number", 20).nullable();
-      table.string("password", 255).nullable();
-      table.string("image", 500).nullable();
+      table.string("title", 255).notNullable();
+      table.text("description").nullable();
+      table.decimal("offer_percentage", 5, 2).notNullable();
+      table.timestamp("end_time").notNullable();
+      table.enum("status", ["active", "inactive"]).notNullable().defaultTo("active");
       
       // Timestamps
       table.timestamp("created_at").defaultTo(knex.fn.now());
@@ -27,6 +27,6 @@ export async function up(knex) {
  * @returns { Promise<void> }
  */
 export async function down(knex) {
-  await knex.schema.dropTableIfExists("deliverymen");
+  await knex.schema.dropTableIfExists("offers");
 }
 
