@@ -15,8 +15,6 @@
     {
       "url": "http://192.168.1.23:8080"
     }
-    
-    
   ],
   "security": [],
   "paths": {
@@ -62,7 +60,6 @@
         }
       }
     },
- 
     "/admin/addOrEditFoodCategory": {
       "post": {
         "summary": "Food Category Add & Upsatw",
@@ -271,20 +268,20 @@
                     "type": "string",
                     "format": "binary"
                   },
-                  "sizes": { 
-                    "type": "string", 
-                    "example": "[{\"size_name\":\"Large\",\"price\":80},{\"size_name\":\"Medium\",\"price\":120}]", 
-                    "description": "JSON array of size objects" 
+                  "sizes": {
+                    "type": "string",
+                    "example": "[{\"size_name\":\"Large\",\"price\":80},{\"size_name\":\"Medium\",\"price\":120}]",
+                    "description": "JSON array of size objects"
                   },
-                  "specifications": { 
-                    "type": "string", 
-                    "example": "[\"4 Chicken\",\"Spicy\"]", 
-                    "description": "JSON array of specification strings" 
+                  "specifications": {
+                    "type": "string",
+                    "example": "[\"4 Chicken\",\"Spicy\"]",
+                    "description": "JSON array of specification strings"
                   },
-                  "addon_ids": { 
-                    "type": "string", 
-                    "example": "[1,5]", 
-                    "description": "JSON array of addon IDs" 
+                  "addon_ids": {
+                    "type": "string",
+                    "example": "[1,5]",
+                    "description": "JSON array of addon IDs"
                   }
                 }
               }
@@ -1116,7 +1113,7 @@
         }
       }
     },
-        "/user/register": {
+    "/user/register": {
       "post": {
         "summary": "create user",
         "tags": [
@@ -1608,7 +1605,10 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "enum": ["active", "inactive"],
+              "enum": [
+                "active",
+                "inactive"
+              ],
               "default": "active"
             },
             "required": false,
@@ -2121,6 +2121,470 @@
         "responses": {
           "200": {
             "description": "Request successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/addAddress": {
+      "post": {
+        "summary": "Add new address",
+        "tags": [
+          "USER"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "default": "John Doe"
+                  },
+                  "email": {
+                    "type": "string",
+                    "default": "john@example.com"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "default": "1234567890"
+                  },
+                  "address": {
+                    "type": "string",
+                    "default": "123 Main Street, City, Country"
+                  },
+                  "latitude": {
+                    "type": "number",
+                    "format": "float",
+                    "default": 23.8103
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "format": "float",
+                    "default": 90.4125
+                  },
+                  "delivery_type": {
+                    "type": "string",
+                    "default": "Home",
+                    "enum": ["Home", "Office", "Other"]
+                  },
+                  "is_default": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "required": [
+                  "name",
+                  "address"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Address added successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/addresses": {
+      "get": {
+        "summary": "Get all addresses for user",
+        "tags": [
+          "USER"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Addresses fetched successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/addresses/updateAddress/{id}": {
+      "put": {
+        "summary": "Update address",
+        "tags": [
+          "USER"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Address ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "type": "number",
+                    "format": "float"
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "format": "float"
+                  },
+                  "delivery_type": {
+                    "type": "string",
+                    "enum": ["Home", "Office", "Other"]
+                  },
+                  "is_default": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Address updated successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Address not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/addresses/removeAddress/{id}": {
+      "delete": {
+        "summary": "Remove address",
+        "tags": [
+          "USER"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Address ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Address removed successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Address not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/getCouponList": {
+      "get": {
+        "summary": "Get Coupon List",
+        "tags": [
+          "COUPON"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/getSingleCoupon": {
+      "get": {
+        "summary": "Get Single Coupon",
+        "tags": [
+          "COUPON"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/addOfferProduct": {
+      "post": {
+        "summary": "Add Product to Offer",
+        "tags": [
+          "OFFER PRODUCT"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "offer_id": {
+                    "type": "integer"
+                  },
+                  "product_id": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "offer_id",
+                  "product_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/getOfferProductList": {
+      "get": {
+        "summary": "Get Offer Product List",
+        "tags": [
+          "OFFER PRODUCT"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "offer_id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/deleteOfferProduct": {
+      "post": {
+        "summary": "Delete Offer Product",
+        "tags": [
+          "OFFER PRODUCT"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
           },
           "400": {
             "description": "Bad request"

@@ -20,4 +20,5 @@ export class TableNames {
     static coupons = "coupons"
     static offers = "offers"
     static offerProducts = "offer_products"
+    static addresses = "addresses"
 }

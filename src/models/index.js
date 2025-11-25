@@ -19,6 +19,7 @@ import Deliveryman from './Deliveryman.js';
 import Coupon from './Coupon.js';
 import Offer from './Offer.js';
 import OfferProduct from './OfferProduct.js';
+import Address from './Address.js';
 
 
 
@@ -46,6 +47,7 @@ const models = {
     Coupon: Coupon(sequelize, Sequelize.DataTypes),
     Offer: Offer(sequelize, Sequelize.DataTypes),
     OfferProduct: OfferProduct(sequelize, Sequelize.DataTypes),
+    Address: Address(sequelize, Sequelize.DataTypes),
 
 };
 
