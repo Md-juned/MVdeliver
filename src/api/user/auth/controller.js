@@ -339,3 +339,50 @@ export const facebookLogin = async (req, res) => {
     });
   }
 };
+
+export const changePassword = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { current_password, new_password } = req.body;
+
+    const user = await models.User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ status: false, message: "User not found." });
+    }
+
+    if (!user.password) {
+      return res.status(400).json({
+        status: false,
+        message: "Password cannot be changed for social login accounts.",
+      });
+    }
+
+    const match = await bcrypt.compare(current_password, user.password);
+    if (!match) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Current password is incorrect." });
+    }
+
+    const isSamePassword = await bcrypt.compare(new_password, user.password);
+    if (isSamePassword) {
+      return res.status(400).json({
+        status: false,
+        message: "New password must be different from current password.",
+      });
+    }
+
+    const hashed = await bcrypt.hash(new_password, 10);
+    await user.update({ password: hashed });
+
+    return res.json({
+      status: true,
+      message: "Password updated successfully.",
+    });
+  } catch (error) {
+    console.error("changePassword error:", error);
+    return res
+      .status(500)
+      .json({ status: false, message: "Internal server error", error: error.message });
+  }
+};

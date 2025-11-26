@@ -1,7 +1,8 @@
 import express from "express";
 import Joi from "joi";
 import { validate } from "../../../common/middleware/validation.middleware.js";
-import { register, login, googleLogin, facebookLogin } from "./controller.js";
+import { authenticateToken } from "../../../common/middleware/jwtToken.middleware.js";
+import { register, login, googleLogin, facebookLogin, changePassword } from "./controller.js";
 
 const router = express.Router();
 
@@ -64,6 +65,22 @@ router.post(
     })
   ),
   facebookLogin
+);
+
+router.put(
+  "/changePassword",
+  authenticateToken,
+  validate(
+    Joi.object({
+      current_password: Joi.string().required(),
+      new_password: Joi.string().min(6).required(),
+      confirm_password: Joi.string()
+        .valid(Joi.ref("new_password"))
+        .required()
+        .messages({ "any.only": "confirm_password must match new_password" }),
+    })
+  ),
+  changePassword
 );
 
 export default router;

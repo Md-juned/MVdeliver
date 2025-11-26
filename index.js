@@ -15,6 +15,8 @@ import homeRoute from './src/api/user/home/index.js';
 import favoritesRoute from './src/api/user/favorites/index.js';
 import cartRoute from './src/api/user/cart/index.js';
 import addressesRoute from './src/api/user/addresses/index.js';
+import contactRoute from './src/api/user/contact/index.js';
+import profileRoute from './src/api/user/profile/index.js';
 
 import adminRoute from './src/api/admin/auth/index.js';
 import productRoute from './src/api/admin/product/index.js';
@@ -110,6 +112,8 @@ app.use("/user", homeRoute);
 app.use("/user", favoritesRoute);
 app.use("/user", cartRoute);
 app.use("/user", addressesRoute);
+app.use("/user", contactRoute);
+app.use("/user", profileRoute);
 
 app.use("/admin", adminRoute);
 app.use("/admin", productRoute);

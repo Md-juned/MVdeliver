@@ -20,6 +20,7 @@ import Coupon from './Coupon.js';
 import Offer from './Offer.js';
 import OfferProduct from './OfferProduct.js';
 import Address from './Address.js';
+import ContactMessage from './ContactMessage.js';
 
 
 
@@ -48,6 +49,7 @@ const models = {
     Offer: Offer(sequelize, Sequelize.DataTypes),
     OfferProduct: OfferProduct(sequelize, Sequelize.DataTypes),
     Address: Address(sequelize, Sequelize.DataTypes),
+    ContactMessage: ContactMessage(sequelize, Sequelize.DataTypes),
 
 };
 
