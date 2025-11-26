@@ -106,6 +106,7 @@ export default (sequelize, DataTypes) => {
     Product.hasMany(models.ProductSize, { as: "sizes", foreignKey: "product_id" });
     Product.hasMany(models.ProductSpecification, { as: "specifications", foreignKey: "product_id" });
     Product.hasMany(models.ProductAddon, { as: "addons", foreignKey: "product_id" });
+    Product.hasMany(models.Favorite, { as: "favorites", foreignKey: "product_id" });
     };
 
 

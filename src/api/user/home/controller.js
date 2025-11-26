@@ -147,6 +147,135 @@ export const getFeaturedProducts = async (req, res) => {
   }
 };
 
+export const getPopularProducts = async (req, res) => {
+  try {
+    const {
+      page = 1,
+      limit = 10,
+      category_id,
+      cuisine_id,
+      restaurant_id,
+      min_price,
+      max_price,
+      search,
+    } = req.query;
+
+    const userId = req.user?.id || null;
+    const where = { status: "active" };
+
+    if (category_id) {
+      where.category_id = category_id;
+    }
+
+    if (restaurant_id) {
+      where.restaurant_id = restaurant_id;
+    }
+
+    if (min_price || max_price) {
+      where.price = {};
+      if (min_price) where.price[Op.gte] = parseFloat(min_price);
+      if (max_price) where.price[Op.lte] = parseFloat(max_price);
+    }
+
+    if (search) {
+      where.name = { [Op.like]: `%${search}%` };
+    }
+
+    const restaurantWhere = {};
+    if (cuisine_id) {
+      restaurantWhere.cuisine_id = cuisine_id;
+    }
+
+    const include = [
+      {
+        model: models.Restaurant,
+        as: "restaurant",
+        attributes: ["id", "name", "logo_image", "city_id", "is_featured", "approval_status"],
+        where: Object.keys(restaurantWhere).length > 0 ? restaurantWhere : {},
+        required: Object.keys(restaurantWhere).length > 0,
+        include: [
+          {
+            model: models.City,
+            as: "city",
+            attributes: ["id", "name"],
+          },
+        ],
+      },
+      {
+        model: models.FoodCategory,
+        as: "foodCategory",
+        attributes: ["id", "name"],
+      },
+      {
+        model: models.ProductSize,
+        as: "sizes",
+        attributes: ["id", "size_name", "price"],
+      },
+      {
+        model: models.ProductSpecification,
+        as: "specifications",
+        attributes: ["id", "name"],
+      },
+    ];
+
+    const favoriteCountLiteral = models.Sequelize.literal(
+      "(SELECT COUNT(*) FROM favorites AS fav WHERE fav.product_id = Product.id)"
+    );
+
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+
+    const { count, rows: products } = await models.Product.findAndCountAll({
+      where,
+      include,
+      attributes: {
+        include: [[favoriteCountLiteral, "favorite_count"]],
+      },
+      order: [
+        [models.Sequelize.literal("favorite_count"), "DESC"],
+        ["created_at", "DESC"],
+      ],
+      limit: parseInt(limit),
+      offset,
+      distinct: true,
+    });
+
+    let favoriteProductIds = [];
+    if (userId) {
+      const favorites = await models.Favorite.findAll({
+        where: { user_id: userId },
+        attributes: ["product_id"],
+      });
+      favoriteProductIds = favorites.map((f) => f.product_id);
+    }
+
+    const productsWithMeta = products.map((product) => {
+      const productData = product.get({ plain: true });
+      productData.favorite_count = parseInt(productData.favorite_count, 10) || 0;
+      productData.is_favorite = userId ? favoriteProductIds.includes(product.id) : false;
+      return productData;
+    });
+
+    return res.json({
+      status: true,
+      message: "Popular products fetched successfully",
+      data: productsWithMeta,
+      pagination: {
+        total: count,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(count / parseInt(limit)),
+        limit: parseInt(limit),
+      },
+    });
+  } catch (error) {
+    console.error("getPopularProducts error:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
 export const getRestaurants = async (req, res) => {
   try {
     const {

@@ -3,6 +3,7 @@ import { optionalAuthenticateToken } from "../../../common/middleware/jwtToken.m
 import {
   getCategories,
   getFeaturedProducts,
+  getPopularProducts,
   getRestaurants,
   getCuisines,
   getAddons,
@@ -13,6 +14,7 @@ const router = express.Router();
 
 router.get("/categories", getCategories);
 router.get("/featuredProducts", optionalAuthenticateToken, getFeaturedProducts);
+router.get("/popularProducts", optionalAuthenticateToken, getPopularProducts);
 router.get("/restaurants", getRestaurants);
 router.get("/cuisines", getCuisines);
 router.get("/addons", getAddons);
