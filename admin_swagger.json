@@ -1,0 +1,1370 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "My Express API",
+    "description": "A sample API built with Express",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080"
+    },
+    {
+      "url": "http://192.168.1.18:8080"
+    },
+    {
+      "url": "http://192.168.1.23:8080"
+    }
+  ],
+  "security": [],
+  "paths": {
+    "/admin/adminLogin": {
+      "post": {
+        "summary": "Admin Login",
+        "tags": [
+          "ADMIN"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "default": "admin@mailinator.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "default": "123456"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/addOrEditFoodCategory": {
+      "post": {
+        "summary": "Food Category Add & Upsatw",
+        "tags": [
+          "FOOD CATEGORY"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "default": "",
+                    "description": "Send id for update, leave empty for add"
+                  },
+                  "name": {
+                    "type": "string",
+                    "default": "Fruits"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "status": {
+                    "type": "string",
+                    "default": "active"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/deleteFoodCategory": {
+      "post": {
+        "summary": "Food Category delete",
+        "tags": [
+          "FOOD CATEGORY"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "default": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/getFoodCategoryList": {
+      "get": {
+        "summary": "Get Food Category List",
+        "tags": [
+          "FOOD CATEGORY"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Page number for pagination"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Items per page"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search by category name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/addOrEditProduct": {
+      "post": {
+        "summary": "Add or Edit Product",
+        "tags": [
+          "PRODUCT"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "default": 0
+                  },
+                  "name": {
+                    "type": "string",
+                    "default": "Oreo Shake"
+                  },
+                  "category_id": {
+                    "type": "integer",
+                    "default": 1
+                  },
+                  "restaurant_id": {
+                    "type": "integer",
+                    "default": 1
+                  },
+                  "price": {
+                    "type": "number",
+                    "default": 150
+                  },
+                  "offer_price": {
+                    "type": "number",
+                    "default": 60
+                  },
+                  "short_description": {
+                    "type": "string",
+                    "default": "Best Oreo shake"
+                  },
+                  "status": {
+                    "type": "string",
+                    "default": "active"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "sizes": {
+                    "type": "string",
+                    "example": "[{\"size_name\":\"Large\",\"price\":80},{\"size_name\":\"Medium\",\"price\":120}]",
+                    "description": "JSON array of size objects"
+                  },
+                  "specifications": {
+                    "type": "string",
+                    "example": "[\"4 Chicken\",\"Spicy\"]",
+                    "description": "JSON array of specification strings"
+                  },
+                  "addon_ids": {
+                    "type": "string",
+                    "example": "[1,5]",
+                    "description": "JSON array of addon IDs"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/getProducts": {
+      "get": {
+        "summary": "Get Product List",
+        "tags": [
+          "PRODUCT"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/deleteProduct": {
+      "post": {
+        "summary": "Product delete",
+        "tags": [
+          "PRODUCT"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "default": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/addOrEditAddon": {
+      "post": {
+        "summary": "Add or Update Addon",
+        "tags": [
+          "ADDON PRODUCT"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "default": "",
+                    "description": "Send id for update, leave empty for add"
+                  },
+                  "restaurant_id": {
+                    "type": "integer",
+                    "default": ""
+                  },
+                  "name": {
+                    "type": "string",
+                    "default": "Extra Cheese"
+                  },
+                  "price": {
+                    "type": "number",
+                    "default": 20
+                  },
+                  "status": {
+                    "type": "string",
+                    "default": "active"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/getAddonList": {
+      "get": {
+        "summary": "Get Addon List",
+        "tags": [
+          "ADDON PRODUCT"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/deleteAddon": {
+      "post": {
+        "summary": "Delete Addon",
+        "tags": [
+          "ADDON PRODUCT"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "default": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/addOrEditCuisine": {
+      "post": {
+        "summary": "Add or Update Cuisine",
+        "tags": [
+          "CUISINE"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "default": "",
+                    "description": "Send id for update, leave empty for add"
+                  },
+                  "name": {
+                    "type": "string",
+                    "default": "Indian"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/getCuisineList": {
+      "get": {
+        "summary": "Get Cuisine List",
+        "tags": [
+          "CUISINE"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/deleteCuisine": {
+      "post": {
+        "summary": "Delete Cuisine",
+        "tags": [
+          "CUISINE"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "default": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/addOrEditCity": {
+      "post": {
+        "summary": "Add or Update City",
+        "tags": [
+          "CITY"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "default": "",
+                    "description": "Send id for update, leave empty for add"
+                  },
+                  "name": {
+                    "type": "string",
+                    "default": "Indian"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/getCity": {
+      "get": {
+        "summary": "Get City List",
+        "tags": [
+          "CITY"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/deleteCity": {
+      "post": {
+        "summary": "Delete City",
+        "tags": [
+          "CITY"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "default": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/addOrEditRestaurant": {
+      "post": {
+        "summary": "Add or Update Restaurant",
+        "tags": [
+          "RESTAURANT"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "default": "",
+                    "description": "Send id for update, leave empty for add"
+                  },
+                  "name": {
+                    "type": "string",
+                    "default": "Retro Chef"
+                  },
+                  "city_id": {
+                    "type": "integer",
+                    "default": ""
+                  },
+                  "cuisine_id": {
+                    "type": "integer",
+                    "default": ""
+                  },
+                  "whatsapp_phone": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "address": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "latitude": {
+                    "type": "number",
+                    "default": ""
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "default": ""
+                  },
+                  "max_delivery_distance": {
+                    "type": "number",
+                    "default": ""
+                  },
+                  "owner_name": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "owner_email": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "owner_phone": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "account_name": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "account_email": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "account_password": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "opening_time": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "closing_time": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "min_food_processing_time": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "max_food_processing_time": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "time_slot_seprated": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "tags": {
+                    "type": "string",
+                    "default": ""
+                  },
+                  "is_featured": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "pickup_order": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "delivery_order": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "approval_status": {
+                    "type": "string",
+                    "enum": [
+                      "pending",
+                      "approved",
+                      "rejected"
+                    ],
+                    "default": "pending"
+                  },
+                  "is_trusted": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "logo_image": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "cover_image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/getRestaurant": {
+      "get": {
+        "summary": "Get Restaurant List",
+        "tags": [
+          "RESTAURANT"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "city_id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/deleteRestaurant": {
+      "post": {
+        "summary": "Delete Restaurant",
+        "tags": [
+          "RESTAURANT"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "default": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/getCouponList": {
+      "get": {
+        "summary": "Get Coupon List",
+        "tags": [
+          "COUPON"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/getSingleCoupon": {
+      "get": {
+        "summary": "Get Single Coupon",
+        "tags": [
+          "COUPON"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/addOfferProduct": {
+      "post": {
+        "summary": "Add Product to Offer",
+        "tags": [
+          "OFFER PRODUCT"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "offer_id": {
+                    "type": "integer"
+                  },
+                  "product_id": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "offer_id",
+                  "product_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/getOfferProductList": {
+      "get": {
+        "summary": "Get Offer Product List",
+        "tags": [
+          "OFFER PRODUCT"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "offer_id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/deleteOfferProduct": {
+      "post": {
+        "summary": "Delete Offer Product",
+        "tags": [
+          "OFFER PRODUCT"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

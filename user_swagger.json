@@ -1,0 +1,1280 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "My Express API - User",
+        "description": "A sample API built with Express",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080"
+        },
+        {
+            "url": "http://192.168.1.18:8080"
+        },
+        {
+            "url": "http://192.168.1.23:8080"
+        }
+    ],
+    "security": [],
+    "components": {
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "paths": {
+        "/user/register": {
+            "post": {
+                "summary": "create user",
+                "tags": [
+                    "USER"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "default": "poorvi"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "default": "poorvi@mailinator.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "default": "123456"
+                                    },
+                                    "device": {
+                                        "type": "string",
+                                        "default": "ios"
+                                    },
+                                    "device_id": {
+                                        "type": "string",
+                                        "default": "23224rryty"
+                                    },
+                                    "fcm_token": {
+                                        "type": "string",
+                                        "default": "qweewewqe"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "summary": "login user",
+                "tags": [
+                    "USER"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "default": "poorvi@mailinator.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "default": "123456"
+                                    },
+                                    "device": {
+                                        "type": "string",
+                                        "default": "ios"
+                                    },
+                                    "device_id": {
+                                        "type": "string",
+                                        "default": "23224rryty"
+                                    },
+                                    "fcm_token": {
+                                        "type": "string",
+                                        "default": "qweewewqe"
+                                    }
+                                },
+                                "required": [
+                                    "email",
+                                    "password"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/googleLogin": {
+            "post": {
+                "summary": "Google social login",
+                "tags": [
+                    "USER"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "google_id": {
+                                        "type": "string",
+                                        "default": "1234567890",
+                                        "description": "Google user ID from OAuth"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "default": "user@gmail.com"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "default": "John Doe",
+                                        "description": "User's full name"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "default": "https://example.com/avatar.jpg",
+                                        "description": "User's profile image URL"
+                                    },
+                                    "device": {
+                                        "type": "string",
+                                        "default": "ios"
+                                    },
+                                    "device_id": {
+                                        "type": "string",
+                                        "default": "23224rryty"
+                                    },
+                                    "fcm_token": {
+                                        "type": "string",
+                                        "default": "qweewewqe"
+                                    }
+                                },
+                                "required": [
+                                    "google_id",
+                                    "email"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/facebookLogin": {
+            "post": {
+                "summary": "Facebook social login",
+                "tags": [
+                    "USER"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "facebook_id": {
+                                        "type": "string",
+                                        "default": "1234567890",
+                                        "description": "Facebook user ID from OAuth"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "default": "user@facebook.com",
+                                        "description": "Email (optional for Facebook)"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "default": "John Doe",
+                                        "description": "User's full name"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "default": "https://example.com/avatar.jpg",
+                                        "description": "User's profile image URL"
+                                    },
+                                    "device": {
+                                        "type": "string",
+                                        "default": "ios"
+                                    },
+                                    "device_id": {
+                                        "type": "string",
+                                        "default": "23224rryty"
+                                    },
+                                    "fcm_token": {
+                                        "type": "string",
+                                        "default": "qweewewqe"
+                                    }
+                                },
+                                "required": [
+                                    "facebook_id"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/categories": {
+            "get": {
+                "summary": "List active categories",
+                "tags": [
+                    "USER"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/featuredProducts": {
+            "get": {
+                "summary": "List featured products with filters and pagination",
+                "tags": [
+                    "USER"
+                ],
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "required": false,
+                        "description": "Page number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        },
+                        "required": false,
+                        "description": "Items per page"
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": false,
+                        "description": "Filter by category"
+                    },
+                    {
+                        "name": "cuisine_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": false,
+                        "description": "Filter by cuisine"
+                    },
+                    {
+                        "name": "restaurant_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": false,
+                        "description": "Filter by restaurant"
+                    },
+                    {
+                        "name": "min_price",
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "required": false,
+                        "description": "Minimum price"
+                    },
+                    {
+                        "name": "max_price",
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "required": false,
+                        "description": "Maximum price"
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": false,
+                        "description": "Search by product name"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/restaurants": {
+            "get": {
+                "summary": "Get all restaurants list",
+                "tags": [
+                    "USER"
+                ],
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "required": false
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        },
+                        "required": false
+                    },
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": false
+                    },
+                    {
+                        "name": "cuisine_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": false
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": false
+                    },
+                    {
+                        "name": "is_featured",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/cuisines": {
+            "get": {
+                "summary": "Get all cuisines with restaurant count",
+                "tags": [
+                    "USER"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/addons": {
+            "get": {
+                "summary": "Get addons list with filters and pagination",
+                "tags": [
+                    "USER"
+                ],
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "required": false,
+                        "description": "Page number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        },
+                        "required": false,
+                        "description": "Items per page"
+                    },
+                    {
+                        "name": "restaurant_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": false,
+                        "description": "Filter by restaurant ID"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "active",
+                                "inactive"
+                            ],
+                            "default": "active"
+                        },
+                        "required": false,
+                        "description": "Filter by status"
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": false,
+                        "description": "Search by addon name"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Addons fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "restaurant_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "price": {
+                                                        "type": "number"
+                                                    },
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "pagination": {
+                                            "type": "object",
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "currentPage": {
+                                                    "type": "integer"
+                                                },
+                                                "totalPages": {
+                                                    "type": "integer"
+                                                },
+                                                "limit": {
+                                                    "type": "integer"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/productSizes": {
+            "get": {
+                "summary": "Get product sizes list with filters and pagination",
+                "tags": [
+                    "USER"
+                ],
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "required": false,
+                        "description": "Page number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        },
+                        "required": false,
+                        "description": "Items per page"
+                    },
+                    {
+                        "name": "product_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": false,
+                        "description": "Filter by product ID"
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": false,
+                        "description": "Search by size name"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product sizes fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "product_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "size_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "price": {
+                                                        "type": "number"
+                                                    },
+                                                    "product": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "image": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "pagination": {
+                                            "type": "object",
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "currentPage": {
+                                                    "type": "integer"
+                                                },
+                                                "totalPages": {
+                                                    "type": "integer"
+                                                },
+                                                "limit": {
+                                                    "type": "integer"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/toggleFavorite": {
+            "post": {
+                "summary": "Like/Dislike product (toggle favorite)",
+                "tags": [
+                    "USER"
+                ],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "product_id": {
+                                        "type": "integer",
+                                        "default": 1
+                                    }
+                                },
+                                "required": [
+                                    "product_id"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/favorites": {
+            "get": {
+                "summary": "Get user favorites list",
+                "tags": [
+                    "USER"
+                ],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "required": false
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        },
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/addToCart": {
+            "post": {
+                "summary": "Add product to cart",
+                "tags": [
+                    "USER"
+                ],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "product_id": {
+                                        "type": "integer",
+                                        "default": 1
+                                    },
+                                    "size_id": {
+                                        "type": "integer",
+                                        "default": null,
+                                        "description": "Product size ID (optional)"
+                                    },
+                                    "quantity": {
+                                        "type": "integer",
+                                        "default": 1
+                                    },
+                                    "addons": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "addon_id": {
+                                                    "type": "integer",
+                                                    "default": 1
+                                                },
+                                                "quantity": {
+                                                    "type": "integer",
+                                                    "default": 1
+                                                }
+                                            },
+                                            "required": [
+                                                "addon_id",
+                                                "quantity"
+                                            ]
+                                        },
+                                        "default": [],
+                                        "description": "Array of addons with quantities"
+                                    }
+                                },
+                                "required": [
+                                    "product_id"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/cart": {
+            "get": {
+                "summary": "Get user cart",
+                "tags": [
+                    "USER"
+                ],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/cart/update": {
+            "put": {
+                "summary": "Update cart item quantity and/or addons",
+                "tags": [
+                    "USER"
+                ],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "cart_id": {
+                                        "type": "integer",
+                                        "default": 1
+                                    },
+                                    "size_id": {
+                                        "type": "integer",
+                                        "nullable": true,
+                                        "description": "Optional - update product size (set to null to remove size)"
+                                    },
+                                    "quantity": {
+                                        "type": "integer",
+                                        "default": 1,
+                                        "description": "Optional - update quantity"
+                                    },
+                                    "addons": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "addon_id": {
+                                                    "type": "integer",
+                                                    "default": 1
+                                                },
+                                                "quantity": {
+                                                    "type": "integer",
+                                                    "default": 1
+                                                }
+                                            },
+                                            "required": [
+                                                "addon_id",
+                                                "quantity"
+                                            ]
+                                        },
+                                        "description": "Optional - update addons list"
+                                    }
+                                },
+                                "required": [
+                                    "cart_id"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/cart/remove": {
+            "delete": {
+                "summary": "Remove item from cart",
+                "tags": [
+                    "USER"
+                ],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "cart_id": {
+                                        "type": "integer",
+                                        "default": 1
+                                    }
+                                },
+                                "required": [
+                                    "cart_id"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/addAddress": {
+            "post": {
+                "summary": "Add new address",
+                "tags": [
+                    "USER"
+                ],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "default": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "default": "john@example.com"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "default": "1234567890"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "default": "123 Main Street, City, Country"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "default": 23.8103
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "default": 90.4125
+                                    },
+                                    "delivery_type": {
+                                        "type": "string",
+                                        "default": "Home",
+                                        "enum": [
+                                            "Home",
+                                            "Office",
+                                            "Other"
+                                        ]
+                                    },
+                                    "is_default": {
+                                        "type": "boolean",
+                                        "default": false
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "address"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Address added successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/addresses": {
+            "get": {
+                "summary": "Get all addresses for user",
+                "tags": [
+                    "USER"
+                ],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Addresses fetched successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/addresses/updateAddress/{id}": {
+            "put": {
+                "summary": "Update address",
+                "tags": [
+                    "USER"
+                ],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "Address ID"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "delivery_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Home",
+                                            "Office",
+                                            "Other"
+                                        ]
+                                    },
+                                    "is_default": {
+                                        "type": "boolean"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Address updated successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Address not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/addresses/removeAddress/{id}": {
+            "delete": {
+                "summary": "Remove address",
+                "tags": [
+                    "USER"
+                ],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "Address ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Address removed successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Address not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        }
+    }
+}
