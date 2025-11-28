@@ -30,53 +30,66 @@ export const getFeaturedProducts = async (req, res) => {
       page = 1,
       limit = 10,
       category_id,
+      categoryId,
       cuisine_id,
+      cuisineId,
       restaurant_id,
+      restaurantId,
       min_price,
+      minPrice,
       max_price,
+      maxPrice,
       search,
     } = req.query;
+
+    const normalizedCategoryId = category_id ?? categoryId;
+    const normalizedCuisineId = cuisine_id ?? cuisineId;
+    const normalizedRestaurantId = restaurant_id ?? restaurantId;
+    const normalizedMinPrice = min_price ?? minPrice;
+    const normalizedMaxPrice = max_price ?? maxPrice;
 
     // Get user ID if authenticated (optional authentication)
     const userId = req.user?.id || null;
 
     const where = { status: "active" };
 
-    if (category_id) {
-      where.category_id = category_id;
+    if (normalizedCategoryId) {
+      where.category_id = normalizedCategoryId;
     }
 
-    if (restaurant_id) {
-      where.restaurant_id = restaurant_id;
+    if (normalizedRestaurantId) {
+      where.restaurant_id = normalizedRestaurantId;
     }
 
-    if (min_price || max_price) {
+    if (normalizedMinPrice || normalizedMaxPrice) {
       where.price = {};
-      if (min_price) where.price[Op.gte] = parseFloat(min_price);
-      if (max_price) where.price[Op.lte] = parseFloat(max_price);
+      if (normalizedMinPrice) where.price[Op.gte] = parseFloat(normalizedMinPrice);
+      if (normalizedMaxPrice) where.price[Op.lte] = parseFloat(normalizedMaxPrice);
     }
 
     if (search) {
       where.name = { [Op.like]: `%${search}%` };
     }
 
-    const restaurantWhere = {};
-    if (cuisine_id) {
-      restaurantWhere.cuisine_id = cuisine_id;
+    if (normalizedCuisineId) {
+      where["$restaurant.cuisine_id$"] = normalizedCuisineId;
     }
 
     const include = [
       {
         model: models.Restaurant,
         as: "restaurant",
-        attributes: ["id", "name", "logo_image", "city_id", "is_featured", "approval_status"],
-        where: Object.keys(restaurantWhere).length > 0 ? restaurantWhere : {},
-        required: Object.keys(restaurantWhere).length > 0,
+        required: !!normalizedCuisineId,
         include: [
           {
             model: models.City,
             as: "city",
             attributes: ["id", "name"],
+          },
+          {
+            model: models.Cuisine,
+            as: "cuisine",
+            attributes: ["id", "name", "image"],
           },
         ],
       },
@@ -106,6 +119,7 @@ export const getFeaturedProducts = async (req, res) => {
       limit: parseInt(limit),
       offset,
       distinct: true,
+      subQuery: false,
     });
 
     // Get favorite status for each product if user is logged in
@@ -190,7 +204,15 @@ export const getPopularProducts = async (req, res) => {
       {
         model: models.Restaurant,
         as: "restaurant",
-        attributes: ["id", "name", "logo_image", "city_id", "is_featured", "approval_status"],
+        attributes: [
+          "id",
+          "name",
+          "logo_image",
+          "city_id",
+          "cuisine_id",
+          "is_featured",
+          "approval_status",
+        ],
         where: Object.keys(restaurantWhere).length > 0 ? restaurantWhere : {},
         required: Object.keys(restaurantWhere).length > 0,
         include: [
@@ -198,6 +220,11 @@ export const getPopularProducts = async (req, res) => {
             model: models.City,
             as: "city",
             attributes: ["id", "name"],
+          },
+          {
+            model: models.Cuisine,
+            as: "cuisine",
+            attributes: ["id", "name", "image"],
           },
         ],
       },
