@@ -10,10 +10,7 @@
       "url": "http://localhost:8080"
     },
     {
-      "url": "http://192.168.1.18:8080"
-    },
-    {
-      "url": "http://192.168.1.23:8080"
+      "url": "http://192.168.1.35:8080"
     }
   ],
   "security": [],
@@ -60,6 +57,7 @@
         }
       }
     },
+  
     "/admin/addOrEditFoodCategory": {
       "post": {
         "summary": "Food Category Add & Upsatw",
@@ -86,6 +84,11 @@
                   "name": {
                     "type": "string",
                     "default": "Fruits"
+                  },
+                  "slug": {
+                    "type": "string",
+                    "default": "fruits",
+                    "description": "Optional unique identifier"
                   },
                   "image": {
                     "type": "string",
@@ -240,6 +243,11 @@
                     "type": "string",
                     "default": "Oreo Shake"
                   },
+                  "slug": {
+                    "type": "string",
+                    "default": "oreo-shake",
+                    "description": "Optional unique identifier"
+                  },
                   "category_id": {
                     "type": "integer",
                     "default": 1
@@ -353,6 +361,33 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/getSingleProduct": {
+      "get": {
+        "summary": "Get Single Product",
+        "tags": ["PRODUCT"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Product ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Single Product fetched successfully"
           }
         }
       }
@@ -582,6 +617,11 @@
                   "name": {
                     "type": "string",
                     "default": "Indian"
+                  },
+                  "slug": {
+                    "type": "string",
+                    "default": "indian",
+                    "description": "Optional unique identifier"
                   },
                   "image": {
                     "type": "string",
@@ -879,6 +919,11 @@
                     "type": "string",
                     "default": "Retro Chef"
                   },
+                  "slug": {
+                    "type": "string",
+                    "default": "retro-chef",
+                    "description": "Optional unique identifier"
+                  },
                   "city_id": {
                     "type": "integer",
                     "default": ""
@@ -1113,107 +1158,294 @@
         }
       }
     },
+    "/admin/addOrEditDeliveryman": {
+      "post": {
+        "summary": "Add or Update Deliveryman",
+        "tags": ["DELIVERYMAN"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "default": "",
+                    "description": "Send id for update, leave empty for add"
+                  },
+                  "first_name": {
+                    "type": "string",
+                    "default": "John"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "default": "john@example.com"
+                  },
+                  "phone_number": {
+                    "type": "string",
+                    "default": "9876543210"
+                  },
+                  "password": {
+                    "type": "string",
+                    "default": "secret"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getDeliverymanList": {
+      "get": {
+        "summary": "Get Deliveryman List",
+        "tags": ["DELIVERYMAN"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "default": "" } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteDeliveryman": {
+      "post": {
+        "summary": "Delete Deliveryman",
+        "tags": ["DELIVERYMAN"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "default": "" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOrEditCoupon": {
+      "post": {
+        "summary": "Add or Edit Coupon",
+        "tags": ["COUPON"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "description": "Coupon ID for update" },
+                  "name": { "type": "string", "default": "New Year" },
+                  "code": { "type": "string", "default": "newyear25" },
+                  "expired_date": { "type": "string", "format": "date", "default": "2025-05-31" },
+                  "min_purchase_price": { "type": "number", "default": 5.00 },
+                  "discount_type": { "type": "string", "enum": ["amount", "percentage"], "default": "percentage" },
+                  "discount": { "type": "number", "default": 10.00 },
+                  "status": { "type": "string", "enum": ["active", "inactive"], "default": "active" }
+                },
+                "required": ["name", "code", "expired_date", "min_purchase_price", "discount_type", "discount"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
     "/admin/getCouponList": {
       "get": {
         "summary": "Get Coupon List",
-        "tags": [
-          "COUPON"
-        ],
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
+        "tags": ["COUPON"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 1
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 10
-            }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "default": ""
-            }
-          }
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "default": "" } }
         ],
         "responses": {
-          "200": {
-            "description": "Request successful"
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/admin/getSingleCoupon": {
       "get": {
         "summary": "Get Single Coupon",
-        "tags": [
-          "COUPON"
-        ],
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
+        "tags": ["COUPON"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true
-          }
+          { "name": "id", "in": "query", "schema": { "type": "integer" }, "required": true }
         ],
         "responses": {
-          "200": {
-            "description": "Request successful"
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteCoupon": {
+      "post": {
+        "summary": "Delete Coupon",
+        "tags": ["COUPON"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" }
+                },
+                "required": ["id"]
+              }
+            }
           }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOrEditOffer": {
+      "post": {
+        "summary": "Add or Edit Offer",
+        "tags": ["OFFER"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "description": "Offer ID for update" },
+                  "title": { "type": "string", "default": "Enjoy 25% Discount!" },
+                  "description": { "type": "string", "default": "Upcoming Black Friday Offer" },
+                  "offer_percentage": { "type": "number", "default": 5 },
+                  "end_time": { "type": "string", "format": "date-time", "default": "2025-06-30T00:00:00Z" },
+                  "status": { "type": "string", "enum": ["active", "inactive"], "default": "active" }
+                },
+                "required": ["title", "offer_percentage", "end_time"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getOfferList": {
+      "get": {
+        "summary": "Get Offer List",
+        "tags": ["OFFER"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "default": "" } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getSingleOffer": {
+      "get": {
+        "summary": "Get Single Offer",
+        "tags": ["OFFER"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteOffer": {
+      "post": {
+        "summary": "Delete Offer",
+        "tags": ["OFFER"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/admin/addOfferProduct": {
       "post": {
         "summary": "Add Product to Offer",
-        "tags": [
-          "OFFER PRODUCT"
-        ],
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
+        "tags": ["OFFER PRODUCT"],
+        "security": [{ "BearerAuth": [] }],
         "requestBody": {
           "required": true,
           "content": {
@@ -1221,108 +1453,45 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "offer_id": {
-                    "type": "integer"
-                  },
-                  "product_id": {
-                    "type": "integer"
-                  }
+                  "product_id": { "type": "integer" }
                 },
-                "required": [
-                  "offer_id",
-                  "product_id"
-                ]
+                "required": ["product_id"]
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Request successful"
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/admin/getOfferProductList": {
       "get": {
         "summary": "Get Offer Product List",
-        "tags": [
-          "OFFER PRODUCT"
-        ],
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
+        "tags": ["OFFER PRODUCT"],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 1
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 10
-            }
-          },
-          {
-            "name": "offer_id",
-            "in": "query",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "default": ""
-            }
-          }
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "offer_id", "in": "query", "schema": { "type": "integer" } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "default": "" } }
         ],
         "responses": {
-          "200": {
-            "description": "Request successful"
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/admin/deleteOfferProduct": {
       "post": {
         "summary": "Delete Offer Product",
-        "tags": [
-          "OFFER PRODUCT"
-        ],
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
+        "tags": ["OFFER PRODUCT"],
+        "security": [{ "BearerAuth": [] }],
         "requestBody": {
           "required": true,
           "content": {
@@ -1330,30 +1499,1593 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {
-                    "type": "integer"
+                  "id": { "type": "integer" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOrEditCurrency": {
+      "post": {
+        "summary": "Add or Edit Currency",
+        "tags": ["CURRENCY"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "description": "Include to update existing currency" },
+                  "name": { "type": "string", "example": "Bangladesh Taka" },
+                  "code": { "type": "string", "example": "BDT" },
+                  "country_code": { "type": "string", "example": "BD" },
+                  "rate": { "type": "number", "format": "float", "example": 100 },
+                  "currency_position": { "type": "string", "enum": ["before_price","before_price_with_space","after_price","after_price_with_space"], "example": "before" },
+                  "status": { "type": "string", "enum": ["active", "inactive"], "example": "active" },
+                  "make_default": { "type": "boolean", "description": "Set as default currency" },
+                  "icon": { "type": "string", "description": "Currency icon" }
+                },
+                "required": ["name", "code", "rate"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getCurrencyList": {
+      "get": {
+        "summary": "Get Currency List",
+        "tags": ["CURRENCY"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "example": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "example": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "example": "usd" } },
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["active", "inactive"] } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getSingleCurrency": {
+      "get": {
+        "summary": "Get Single Currency",
+        "tags": ["CURRENCY"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteCurrency": {
+      "post": {
+        "summary": "Delete Currency",
+        "tags": ["CURRENCY"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/saveStripeGateway": {
+      "post": {
+        "summary": "Create or Update Stripe Gateway",
+        "tags": ["PAYMENT"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "description": "Toggle visibility status",
+                    "example": "active"
+                  },
+                  "currency": { "type": "string", "example": "USD", "description": "Currency code" },
+                  "stripe_key": {
+                    "type": "string",
+                    "description": "Stripe public key",
+                    "example": "pk_test_1234567890"
+                  },
+                  "stripe_secret": {
+                    "type": "string",
+                    "description": "Stripe secret key",
+                    "example": "sk_test_1234567890"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Gateway logo image"
                   }
                 },
+                "required": ["currency", "stripe_key", "stripe_secret"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getStripeGateway": {
+      "get": {
+        "summary": "Get Stripe Gateway",
+        "tags": ["PAYMENT"],
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/saveGeneralSetting": {
+      "post": {
+        "summary": "Create or Update General Setting",
+        "tags": ["SETTING"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "app_name": { "type": "string", "example": "Foodigo", "maxLength": 255 },
+                  "preloader": { "type": "string", "enum": ["enable", "disable"], "example": "disable" },
+                  "commission_type": {
+                    "type": "string",
+                    "example": "commission",
+                    "maxLength": 50
+                  },
+                  "seller_commission_per_delivery": { "type": "number", "format": "float", "example": 2, "minimum": 0 },
+                  "delivery_commission_per_delivery": { "type": "number", "format": "float", "example": 2.5, "minimum": 0 },
+                  "contact_message_receiver_email": { "type": "string", "format": "email", "example": "admin@gmail.com" },
+                  "timezone": { "type": "string", "example": "Asia/Dhaka", "maxLength": 120 },
+                  "per_kilometer_delivery_charge": { "type": "number", "format": "float", "example": 3, "minimum": 0 }
+                },
                 "required": [
-                  "id"
+                  "app_name",
+                  "preloader",
+                  "commission_type",
+                  "seller_commission_per_delivery",
+                  "delivery_commission_per_delivery",
+                  "contact_message_receiver_email",
+                  "timezone",
+                  "per_kilometer_delivery_charge"
                 ]
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Request successful"
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getGeneralSetting": {
+      "get": {
+        "summary": "Get General Setting",
+        "tags": ["SETTING"],
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOrEditOfferDealBanner": {
+      "post": {
+        "summary": "Add or Edit Offer Deal Banner",
+        "tags": ["BANNER - OFFER DEAL"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "description": "Send id to update existing banner" },
+                  "url": { "type": "string", "default": "https://example.com" },
+                  "status": { "type": "string", "enum": ["active", "inactive"], "default": "active" },
+                "display_order": { "type": "integer", "default": 0 },
+                  "image": { "type": "string", "format": "binary", "description": "Banner image" }
+                },
+                "required": ["url"]
+              }
+            }
           }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getOfferDealBannerList": {
+      "get": {
+        "summary": "Get Offer Deal Banner List",
+        "tags": ["BANNER - OFFER DEAL"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "default": "" } },
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["active", "inactive"] } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getSingleOfferDealBanner": {
+      "get": {
+        "summary": "Get Single Offer Deal Banner",
+        "tags": ["BANNER - OFFER DEAL"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteOfferDealBanner": {
+      "post": {
+        "summary": "Delete Offer Deal Banner",
+        "tags": ["BANNER - OFFER DEAL"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOrEditPromotionalBanner": {
+      "post": {
+        "summary": "Add or Edit Promotional Banner",
+        "tags": ["BANNER - PROMOTIONAL"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "integer", "description": "Send id to update existing banner" },
+                      "section_key": {
+                        "type": "string",
+                        "default": "home_banner_one",
+                        "description": "Required when creating a banner (e.x. home_banner_one,home_banner_two,search_restaurant_banner,blog_banner_one,blog_banner_two)"
+                      },
+                      "title": { "type": "string", "default": "Home Promotional Banner One" },
+                      "url": { "type": "string", "default": "https://example.com" },
+                      "status": { "type": "string", "enum": ["active", "inactive"], "default": "active" },
+                      "display_order": { "type": "integer", "default": 0 },
+                      "image": { "type": "string", "format": "binary", "description": "Banner image" }
+                    },
+                    "required": ["title"]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "banners": {
+                        "type": "array",
+                        "description": "JSON array describing multiple banners. When submitting via multipart/form-data send this as a JSON string in the `banners` field and attach images using the `image_field` name or matching section_key.",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": { "type": "integer", "description": "Optional existing banner id to update" },
+                            "section_key": {
+                              "type": "string",
+                              "description": "Unique key for the banner (home_banner_one, blog_banner_two, etc.)"
+                            },
+                            "title": { "type": "string", "description": "Banner title" },
+                            "url": { "type": "string", "description": "Destination URL" },
+                            "status": { "type": "string", "enum": ["active", "inactive"] },
+                            "display_order": { "type": "integer", "default": 0 },
+                            "image_field": {
+                              "type": "string",
+                              "description": "Optional form-data field name that carries the image for this banner. Defaults to using section_key based names when omitted."
+                            }
+                          },
+                          "required": ["section_key", "title"]
+                        }
+                      }
+                    },
+                    "required": ["banners"]
+                  }
+                ]
+              },
+              "examples": {
+                "single": {
+                  "summary": "Create or update one banner",
+                  "value": {
+                    "id": 1,
+                    "section_key": "home_banner_one",
+                    "title": "Home Promotional Banner One",
+                    "url": "https://example.com",
+                    "status": "active",
+                    "display_order": 0,
+                    "image": "(binary)"
+                  }
+                },
+                "bulk": {
+                  "summary": "Create or update multiple banners in one request",
+                  "value": {
+                    "banners": "[{\"section_key\":\"home_banner_one\",\"title\":\"Banner One\",\"status\":\"active\"},{\"section_key\":\"home_banner_two\",\"title\":\"Banner Two\",\"status\":\"active\"},{\"section_key\":\"search_restaurant_banner\",\"title\":\"Search Banner\",\"status\":\"inactive\"}]",
+                    "home_banner_one": "(binary)",
+                    "home_banner_two": "(binary)",
+                    "search_restaurant_banner": "(binary)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getPromotionalBannerList": {
+      "get": {
+        "summary": "Get Promotional Banner List",
+        "tags": ["BANNER - PROMOTIONAL"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["active", "inactive"] } },
+          { "name": "section_key", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getSinglePromotionalBanner": {
+      "get": {
+        "summary": "Get Single Promotional Banner",
+        "tags": ["BANNER - PROMOTIONAL"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" } },
+          { "name": "section_key", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deletePromotionalBanner": {
+      "post": {
+        "summary": "Delete Promotional Banner",
+        "tags": ["BANNER - PROMOTIONAL"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOrEditSellerWithdrawMethod": {
+      "post": {
+        "summary": "Add or Edit Seller Withdraw Method",
+        "tags": ["SELLER WITHDRAW - METHODS"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "description": "Send id to update existing method" },
+                  "name": { "type": "string" },
+                  "minimum_amount": { "type": "number", "format": "float" },
+                  "maximum_amount": { "type": "number", "format": "float" },
+                  "withdraw_charge": { "type": "number", "format": "float", "description": "Charge percentage applied on withdrawal" },
+                  "description": { "type": "string" },
+                  "status": { "type": "string", "enum": ["active", "inactive"] }
+                },
+                "required": ["name", "minimum_amount", "maximum_amount", "withdraw_charge", "description"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getSellerWithdrawMethodList": {
+      "get": {
+        "summary": "Get Seller Withdraw Method List",
+        "tags": ["SELLER WITHDRAW - METHODS"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "default": "" } },
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["active", "inactive"] } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getSingleSellerWithdrawMethod": {
+      "get": {
+        "summary": "Get Single Seller Withdraw Method",
+        "tags": ["SELLER WITHDRAW - METHODS"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteSellerWithdrawMethod": {
+      "post": {
+        "summary": "Delete Seller Withdraw Method",
+        "tags": ["SELLER WITHDRAW - METHODS"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getSellerWithdrawList": {
+      "get": {
+        "summary": "Get Seller Withdraw Request List",
+        "tags": ["SELLER WITHDRAW - REQUESTS"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "default": "", "description": "Search by restaurant name" } },
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["pending", "approved", "rejected"] } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getSellerWithdrawDetail": {
+      "get": {
+        "summary": "Get Seller Withdraw Request Detail",
+        "tags": ["SELLER WITHDRAW - REQUESTS"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/updateSellerWithdrawStatus": {
+      "post": {
+        "summary": "Approve or Reject Seller Withdraw Request",
+        "tags": ["SELLER WITHDRAW - REQUESTS"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" },
+                  "status": { "type": "string", "enum": ["approved", "rejected"] },
+                  "description": { "type": "string", "description": "Optional remarks, e.g. rejection reason" }
+                },
+                "required": ["id", "status"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteSellerWithdrawRequest": {
+      "post": {
+        "summary": "Delete Seller Withdraw Request",
+        "tags": ["SELLER WITHDRAW - REQUESTS"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOrEditDeliveryWithdrawMethod": {
+      "post": {
+        "summary": "Add or Edit Delivery Withdraw Method",
+        "tags": ["DELIVERY WITHDRAW - METHODS"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "description": "Send id to update existing method" },
+                  "name": { "type": "string" },
+                  "minimum_amount": { "type": "number", "format": "float" },
+                  "maximum_amount": { "type": "number", "format": "float" },
+                  "withdraw_charge": { "type": "number", "format": "float", "description": "Charge percentage applied on withdrawal" },
+                  "description": { "type": "string" },
+                  "status": { "type": "string", "enum": ["active", "inactive"] }
+                },
+                "required": ["name", "minimum_amount", "maximum_amount", "withdraw_charge", "description"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getDeliveryWithdrawMethodList": {
+      "get": {
+        "summary": "Get Delivery Withdraw Method List",
+        "tags": ["DELIVERY WITHDRAW - METHODS"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "default": "" } },
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["active", "inactive"] } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getSingleDeliveryWithdrawMethod": {
+      "get": {
+        "summary": "Get Single Delivery Withdraw Method",
+        "tags": ["DELIVERY WITHDRAW - METHODS"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteDeliveryWithdrawMethod": {
+      "post": {
+        "summary": "Delete Delivery Withdraw Method",
+        "tags": ["DELIVERY WITHDRAW - METHODS"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getDeliveryWithdrawList": {
+      "get": {
+        "summary": "Get Delivery Withdraw Request List",
+        "tags": ["DELIVERY WITHDRAW - REQUESTS"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "default": "", "description": "Search by deliveryman name, email, or phone" } },
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["pending", "approved", "rejected"] } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getDeliveryWithdrawDetail": {
+      "get": {
+        "summary": "Get Delivery Withdraw Request Detail",
+        "tags": ["DELIVERY WITHDRAW - REQUESTS"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/updateDeliveryWithdrawStatus": {
+      "post": {
+        "summary": "Approve or Reject Delivery Withdraw Request",
+        "tags": ["DELIVERY WITHDRAW - REQUESTS"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" },
+                  "status": { "type": "string", "enum": ["approved", "rejected"] },
+                  "description": { "type": "string", "description": "Optional remarks, e.g. rejection reason" }
+                },
+                "required": ["id", "status"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteDeliveryWithdrawRequest": {
+      "post": {
+        "summary": "Delete Delivery Withdraw Request",
+        "tags": ["DELIVERY WITHDRAW - REQUESTS"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOrEditBlogCategory": {
+      "post": {
+        "summary": "Add or Update Blog Category",
+        "tags": ["BLOG CATEGORY"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "description": "Send id for update, leave empty for add" },
+                  "name": { "type": "string", "default": "Vegetable" },
+                  "slug": { "type": "string", "default": "vegetable", "description": "Optional unique identifier" },
+                  "visibility_status": { "type": "string", "enum": ["active", "inactive"], "default": "active" }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getBlogCategoryList": {
+      "get": {
+        "summary": "Get Blog Category List",
+        "tags": ["BLOG CATEGORY"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "default": "" } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getSingleBlogCategory": {
+      "get": {
+        "summary": "Get Single Blog Category",
+        "tags": ["BLOG CATEGORY"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteBlogCategory": {
+      "post": {
+        "summary": "Delete Blog Category",
+        "tags": ["BLOG CATEGORY"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOrEditBlog": {
+      "post": {
+        "summary": "Add or Update Blog",
+        "tags": ["BLOG"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "description": "Send id for update, leave empty for add" },
+                  "title": { "type": "string", "default": "Epicurean Escapade: Discovering Delectable Delights" },
+                  "slug": { "type": "string", "default": "epicurean-escapade-discovering-delectable-delights", "description": "Optional unique identifier" },
+                  "category_id": { "type": "integer", "default": 1 },
+                  "description": { "type": "string", "description": "Rich text content" },
+                  "visibility_status": { "type": "string", "enum": ["active", "inactive", "public", "private"], "default": "active" },
+                  "tags": { "type": "string", "default": "FoodMenu,Restaurant,foodigo", "description": "Comma-separated tags" },
+                  "seo_title": { "type": "string", "default": "Epicurean Escapade: Discovering Delectable Delights" },
+                  "seo_description": { "type": "string", "default": "Epicurean Escapade: Discovering Delectable Delights" },
+                  "image": { "type": "string", "format": "binary", "description": "Blog featured image" }
+                },
+                "required": ["title", "category_id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getBlogList": {
+      "get": {
+        "summary": "Get Blog List",
+        "tags": ["BLOG"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "default": "" } },
+          { "name": "category_id", "in": "query", "schema": { "type": "integer" } },
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["active", "inactive"] } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getSingleBlog": {
+      "get": {
+        "summary": "Get Single Blog",
+        "tags": ["BLOG"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteBlog": {
+      "post": {
+        "summary": "Delete Blog",
+        "tags": ["BLOG"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getBlogCommentList": {
+      "get": {
+        "summary": "Get Blog Comment List",
+        "tags": ["BLOG COMMENT"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string", "default": "" } },
+          { "name": "blog_id", "in": "query", "schema": { "type": "integer" } },
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["active", "inactive"] } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getSingleBlogComment": {
+      "get": {
+        "summary": "Get Single Blog Comment",
+        "tags": ["BLOG COMMENT"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/updateBlogCommentStatus": {
+      "post": {
+        "summary": "Update Blog Comment Status",
+        "tags": ["BLOG COMMENT"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" },
+                  "status": { "type": "string", "enum": ["active", "inactive"] }
+                },
+                "required": ["id", "status"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteBlogComment": {
+      "post": {
+        "summary": "Delete Blog Comment",
+        "tags": ["BLOG COMMENT"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOrEditAboutUsPage": {
+      "post": {
+        "summary": "Add or Edit About Us Page",
+        "tags": ["ABOUT US PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "description": "Send id for update, leave empty for add" },
+                  "language": { "type": "string", "default": "en", "description": "Language code (en, bn, etc.)" },
+                  "title": { "type": "string", "default": "Our Story of food Culinary Excellence at Foodigo" },
+                  "description": { "type": "string", "description": "Rich text content (HTML)" },
+                  "experience_year": { "type": "integer", "default": 15 },
+                  "additional_data": {
+                    "type": "string",
+                    "example": "[{\"title\":\"20k+ Customers\",\"description\":\"Believe in our service & Care\"},{\"title\":\"100+ Branch\",\"description\":\"Food ready for occupancy\"}]",
+                    "description": "JSON array for additional data"
+                  },
+                  "about_image": { "type": "string", "format": "binary", "description": "About Us image" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getAboutUsPage": {
+      "get": {
+        "summary": "Get About Us Page",
+        "tags": ["ABOUT US PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" }, "description": "Page ID" },
+          { "name": "language", "in": "query", "schema": { "type": "string" }, "default": "en", "description": "Language code" }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Page not found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getAboutUsPageList": {
+      "get": {
+        "summary": "Get About Us Page List",
+        "tags": ["ABOUT US PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "language", "in": "query", "schema": { "type": "string" }, "description": "Filter by language" },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteAboutUsPage": {
+      "post": {
+        "summary": "Delete About Us Page",
+        "tags": ["ABOUT US PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "id": { "type": "integer" } },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Page not found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOrEditTermsConditionsPage": {
+      "post": {
+        "summary": "Add or Edit Terms and Conditions Page",
+        "tags": ["TERMS AND CONDITIONS PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "description": "Send id for update" },
+                  "language": { "type": "string", "default": "en" },
+                  "title": { "type": "string" },
+                  "description": { "type": "string", "description": "Rich text content (HTML)" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getTermsConditionsPage": {
+      "get": {
+        "summary": "Get Terms and Conditions Page",
+        "tags": ["TERMS AND CONDITIONS PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" } },
+          { "name": "language", "in": "query", "schema": { "type": "string" }, "default": "en" }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Page not found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getTermsConditionsPageList": {
+      "get": {
+        "summary": "Get Terms and Conditions Page List",
+        "tags": ["TERMS AND CONDITIONS PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "language", "in": "query", "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteTermsConditionsPage": {
+      "post": {
+        "summary": "Delete Terms and Conditions Page",
+        "tags": ["TERMS AND CONDITIONS PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "id": { "type": "integer" } },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Page not found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOrEditPrivacyPolicyPage": {
+      "post": {
+        "summary": "Add or Edit Privacy Policy Page",
+        "tags": ["PRIVACY POLICY PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "description": "Send id for update" },
+                  "language": { "type": "string", "default": "en" },
+                  "title": { "type": "string" },
+                  "description": { "type": "string", "description": "Rich text content (HTML)" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getPrivacyPolicyPage": {
+      "get": {
+        "summary": "Get Privacy Policy Page",
+        "tags": ["PRIVACY POLICY PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" } },
+          { "name": "language", "in": "query", "schema": { "type": "string" }, "default": "en" }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Page not found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getPrivacyPolicyPageList": {
+      "get": {
+        "summary": "Get Privacy Policy Page List",
+        "tags": ["PRIVACY POLICY PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "language", "in": "query", "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deletePrivacyPolicyPage": {
+      "post": {
+        "summary": "Delete Privacy Policy Page",
+        "tags": ["PRIVACY POLICY PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "id": { "type": "integer" } },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Page not found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOrEditContactUsPage": {
+      "post": {
+        "summary": "Add or Edit Contact Us Page",
+        "tags": ["CONTACT US PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "description": "Send id for update" },
+                  "language": { "type": "string", "default": "en" },
+                  "title": { "type": "string", "default": "We love to collab with curious and smart. Let's do great things together!" },
+                  "email": { "type": "string", "format": "email", "default": "foodigo@gmail.com" },
+                  "phone": { "type": "string", "default": "+1 707 797 0462" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getContactUsPage": {
+      "get": {
+        "summary": "Get Contact Us Page",
+        "tags": ["CONTACT US PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" } },
+          { "name": "language", "in": "query", "schema": { "type": "string" }, "default": "en" }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Page not found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getContactUsPageList": {
+      "get": {
+        "summary": "Get Contact Us Page List",
+        "tags": ["CONTACT US PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "language", "in": "query", "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteContactUsPage": {
+      "post": {
+        "summary": "Delete Contact Us Page",
+        "tags": ["CONTACT US PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "id": { "type": "integer" } },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Page not found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/addOrEditLoginPage": {
+      "post": {
+        "summary": "Add or Edit Login Page",
+        "tags": ["LOGIN PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "description": "Send id for update" },
+                  "language": { "type": "string", "default": "en" },
+                  "title_one": { "type": "string", "default": "Simple method for Choosing Your Location" },
+                  "description_one": { "type": "string", "default": "Seize the moment and help shape the future by starting a career in blockchain now, the moment" },
+                  "title_two": { "type": "string", "default": "Effortless for Ordering your delectable Cuisine" },
+                  "description_two": { "type": "string", "default": "Seize the moment and help shape the future by starting a career in blockchain now, the moment and help shape the future by starting" },
+                  "title_three": { "type": "string", "default": "Simplified to delight in your Flavorful meals" },
+                  "description_three": { "type": "string", "default": "Seize the moment and help shape the future by starting a career in blockchain now, the moment and help shape the future by starting" },
+                  "image_one": { "type": "string", "format": "binary", "description": "Login page image one" },
+                  "image_two": { "type": "string", "format": "binary", "description": "Login page image two" },
+                  "image_three": { "type": "string", "format": "binary", "description": "Login page image three" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getLoginPage": {
+      "get": {
+        "summary": "Get Login Page",
+        "tags": ["LOGIN PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "integer" } },
+          { "name": "language", "in": "query", "schema": { "type": "string" }, "default": "en" }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Page not found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/getLoginPageList": {
+      "get": {
+        "summary": "Get Login Page List",
+        "tags": ["LOGIN PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "language", "in": "query", "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } }
+        ],
+        "responses": {
+          "200": { "description": "Request successful" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/admin/deleteLoginPage": {
+      "post": {
+        "summary": "Delete Login Page",
+        "tags": ["LOGIN PAGE"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "id": { "type": "integer" } },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Request successful" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Page not found" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     }

@@ -21,9 +21,23 @@ import Offer from './Offer.js';
 import OfferProduct from './OfferProduct.js';
 import Address from './Address.js';
 import ContactMessage from './ContactMessage.js';
-
-
-
+import OfferDealBanner from './OfferDealBanner.js';
+import PromotionalBanner from './PromotionalBanner.js';
+import SellerWithdrawMethod from './SellerWithdrawMethod.js';
+import SellerWithdrawRequest from './SellerWithdrawRequest.js';
+import DeliveryWithdrawMethod from './DeliveryWithdrawMethod.js';
+import DeliveryWithdrawRequest from './DeliveryWithdrawRequest.js';
+import Currency from './Currency.js';
+import Setting from './Setting.js';
+import PaymentGateway from './PaymentGateway.js';
+import BlogCategory from './BlogCategory.js';
+import Blog from './Blog.js';
+import BlogComment from './BlogComment.js';
+import AboutUsPage from './AboutUsPage.js';
+import TermsConditionsPage from './TermsConditionsPage.js';
+import PrivacyPolicyPage from './PrivacyPolicyPage.js';
+import ContactUsPage from './ContactUsPage.js';
+import LoginPage from './LoginPage.js';
 const sequelize = new Sequelize(dbConfig.url, {
     ...dbConfig,
 });
@@ -50,6 +64,23 @@ const models = {
     OfferProduct: OfferProduct(sequelize, Sequelize.DataTypes),
     Address: Address(sequelize, Sequelize.DataTypes),
     ContactMessage: ContactMessage(sequelize, Sequelize.DataTypes),
+    OfferDealBanner: OfferDealBanner(sequelize, Sequelize.DataTypes),
+    PromotionalBanner: PromotionalBanner(sequelize, Sequelize.DataTypes),
+    SellerWithdrawMethod: SellerWithdrawMethod(sequelize, Sequelize.DataTypes),
+    SellerWithdrawRequest: SellerWithdrawRequest(sequelize, Sequelize.DataTypes),
+    DeliveryWithdrawMethod: DeliveryWithdrawMethod(sequelize, Sequelize.DataTypes),
+    DeliveryWithdrawRequest: DeliveryWithdrawRequest(sequelize, Sequelize.DataTypes),
+    Currency: Currency(sequelize, Sequelize.DataTypes),
+    Setting: Setting(sequelize, Sequelize.DataTypes),
+    PaymentGateway: PaymentGateway(sequelize, Sequelize.DataTypes),
+    BlogCategory: BlogCategory(sequelize, Sequelize.DataTypes),
+    Blog: Blog(sequelize, Sequelize.DataTypes),
+    BlogComment: BlogComment(sequelize, Sequelize.DataTypes),
+    AboutUsPage: AboutUsPage(sequelize, Sequelize.DataTypes),
+    TermsConditionsPage: TermsConditionsPage(sequelize, Sequelize.DataTypes),
+    PrivacyPolicyPage: PrivacyPolicyPage(sequelize, Sequelize.DataTypes),
+    ContactUsPage: ContactUsPage(sequelize, Sequelize.DataTypes),
+    LoginPage: LoginPage(sequelize, Sequelize.DataTypes),
 
 };
 

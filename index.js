@@ -23,6 +23,18 @@ import productRoute from './src/api/admin/product/index.js';
 import restaurantRoute from './src/api/admin/restaurant/index.js';
 import deliverymanRoute from './src/api/admin/deliveryman/index.js';
 import promotionRoute from './src/api/admin/promotion/index.js';
+import bannerRoute from './src/api/admin/banner/index.js';
+import sellerWithdrawRoute from './src/api/admin/seller_withdraw/index.js';
+import deliveryWithdrawRoute from './src/api/admin/DeliveryWithdraw/index.js';
+import currencyRoute from './src/api/admin/currency/index.js';
+import settingRoute from './src/api/admin/setting/index.js';
+import paymentRoute from './src/api/admin/payment/index.js';
+import blogRoute from './src/api/admin/blog/index.js';
+import aboutUsRoute from './src/api/admin/manage_pages/about_us/index.js';
+import termsConditionsRoute from './src/api/admin/manage_pages/terms_conditions/index.js';
+import privacyPolicyRoute from './src/api/admin/manage_pages/privacy_policy/index.js';
+import contactUsRoute from './src/api/admin/manage_pages/contact_us/index.js';
+import loginPageRoute from './src/api/admin/manage_pages/login_page/index.js';
 
 const app = express();
 const server = createServer(app);
@@ -120,6 +132,18 @@ app.use("/admin", productRoute);
 app.use("/admin", restaurantRoute);
 app.use("/admin", deliverymanRoute);
 app.use("/admin", promotionRoute);
+app.use("/admin", bannerRoute);
+app.use("/admin", sellerWithdrawRoute);
+app.use("/admin", deliveryWithdrawRoute);
+app.use("/admin", currencyRoute);
+app.use("/admin", settingRoute);
+app.use("/admin", paymentRoute);
+app.use("/admin", blogRoute);
+app.use("/admin", aboutUsRoute);
+app.use("/admin", termsConditionsRoute);
+app.use("/admin", privacyPolicyRoute);
+app.use("/admin", contactUsRoute);
+app.use("/admin", loginPageRoute);
 
 // DATABASE
 database;
