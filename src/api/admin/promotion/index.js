@@ -140,7 +140,6 @@ router.post(
   authenticateToken,
   validate(
     Joi.object({
-      offer_id: Joi.number().required(),
       product_id: Joi.number().required(),
     })
   ),

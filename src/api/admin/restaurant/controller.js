@@ -197,7 +197,7 @@ export const addOrEditCity = async (req, res) => {
       message: "City added successfully",
     });
   } catch (error) {
-    console.log(error);
+    console.log("--------------------------------",error);
     return res.status(500).json({
       status: false,
       message: error.message,
@@ -281,6 +281,22 @@ export const deleteCity = async (req, res) => {
 
 // ---- Restaurant ----
 
+const validateLatitude = (value) => {
+  if (value === undefined || value === null || value === "") return null;
+  const num = Number(value);
+  if (Number.isNaN(num)) return null;
+  if (num < -90 || num > 90) return null;
+  return num;
+};
+
+const validateLongitude = (value) => {
+  if (value === undefined || value === null || value === "") return null;
+  const num = Number(value);
+  if (Number.isNaN(num)) return null;
+  if (num < -180 || num > 180) return null;
+  return num;
+};
+
 export const addOrEditRestaurant = async (req, res) => {
   try {
     const data = { ...req.body };
@@ -290,6 +306,33 @@ export const addOrEditRestaurant = async (req, res) => {
       data.slug = slugInput;
     } else {
       delete data.slug;
+    }
+
+    // Validate and normalize latitude/longitude
+    if (data.latitude !== undefined && data.latitude !== null && data.latitude !== "") {
+      const validLat = validateLatitude(data.latitude);
+      if (validLat === null) {
+        return res.status(400).json({
+          status: false,
+          message: "Latitude must be between -90 and 90",
+        });
+      }
+      data.latitude = validLat;
+    } else if (data.latitude === "") {
+      data.latitude = null;
+    }
+
+    if (data.longitude !== undefined && data.longitude !== null && data.longitude !== "") {
+      const validLng = validateLongitude(data.longitude);
+      if (validLng === null) {
+        return res.status(400).json({
+          status: false,
+          message: "Longitude must be between -180 and 180",
+        });
+      }
+      data.longitude = validLng;
+    } else if (data.longitude === "") {
+      data.longitude = null;
     }
 
     let result;
@@ -325,14 +368,23 @@ export const addOrEditRestaurant = async (req, res) => {
       const updateData = { ...data };
       delete updateData.id;
 
-      // Remove undefined, empty string, or null fields so they don't update
+      // Remove undefined or empty string fields so they don't update
+      // But keep null values for latitude/longitude if explicitly set
       Object.keys(updateData).forEach((key) => {
-        if (
-          updateData[key] === undefined ||
-          updateData[key] === "" ||
-          updateData[key] === null
-        ) {
-          delete updateData[key];
+        if (key === "latitude" || key === "longitude") {
+          // Keep null values for lat/lng (they're valid)
+          if (updateData[key] === undefined || updateData[key] === "") {
+            delete updateData[key];
+          }
+        } else {
+          // For other fields, remove undefined, empty string, or null
+          if (
+            updateData[key] === undefined ||
+            updateData[key] === "" ||
+            updateData[key] === null
+          ) {
+            delete updateData[key];
+          }
         }
       });
 
@@ -354,6 +406,10 @@ export const addOrEditRestaurant = async (req, res) => {
         data.cover_image = req.files.cover_image[0].path;
       }
 
+      // Clean up empty strings for create - convert to null for lat/lng
+      if (data.latitude === "") data.latitude = null;
+      if (data.longitude === "") data.longitude = null;
+
       result = await models.Restaurant.create(data);
     }
 
@@ -363,6 +419,7 @@ export const addOrEditRestaurant = async (req, res) => {
       data: result,
     });
   } catch (err) {
+    console.log("--------------------------------",err);
     return res.status(500).json({ status: false, message: err.message });
   }
 };

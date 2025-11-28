@@ -409,20 +409,26 @@ export const deleteOffer = async (req, res) => {
 
 export const addOfferProduct = async (req, res) => {
   try {
-    const { offer_id, product_id } = req.body;
+    const { product_id } = req.body;
 
-    if (!offer_id || !product_id) {
+    if (!product_id) {
       return res.json({
         status: false,
-        message: "Offer ID and Product ID are required",
+        message: "Product ID are required",
       });
     }
 
     // Check if offer exists
-    const offer = await models.Offer.findOne({ where: { id: offer_id } });
-    if (!offer) {
-      return res.json({ status: false, message: "Offer not found" });
-    }
+      // 🔥 Get the latest offer first
+      const offer = await models.Offer.findOne({
+        order: [["id", "DESC"]], // latest offer
+      });
+
+      if (!offer) {
+        return res.json({ status: false, message: "Offer not found" });
+      }
+
+    const offer_id = offer.id; 
 
     // Check if product exists
     const product = await models.Product.findOne({ where: { id: product_id } });
